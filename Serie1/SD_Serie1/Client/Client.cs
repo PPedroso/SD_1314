@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace Server
+namespace Client
 {
-    static class Program
+    static class Client
     {
         /// <summary>
         /// The main entry point for the application.

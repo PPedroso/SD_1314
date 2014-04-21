@@ -5,10 +5,11 @@ using System.Text;
 
 namespace Worker
 {
-    class Program
+    class Worker
     {
         static void Main(string[] args)
         {
+
         }
     }
 }
