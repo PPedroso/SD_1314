@@ -3,26 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using ClientJob;
-using JobImplementation;
 
 namespace Client
 {
+    [Serializable]
     class JobManager
     {
         Dictionary<Int32, IJob> dict = new Dictionary<Int32, IJob>();
-        Int32 
 
-        Job createJob(String exName,String inputFile,String outputFile){
-            Job j = new Job(exName, inputFile, outputFile);
-
-
-            return j; 
-                
+        public void addJob(Int32 identifier, IJob job) {
+            dict.Add(identifier, job);
         }
 
-
-        void sendJob(Job j) { 
-            
+        public void removeJob(Int32 identifier) {
+            dict.Remove(identifier);
         }
     }
 }
