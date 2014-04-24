@@ -50,6 +50,7 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="IBroker.cs" />
     <Compile Include="Server.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -70,6 +71,16 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\IBroker\IBroker.csproj">
+      <Project>{067269fb-5c7d-451c-b51a-8dfcd4cdad77}</Project>
+      <Name>IBroker</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\IJob\IJob.csproj">
+      <Project>{f9e448a5-f7dc-422a-bca7-bec59f126b15}</Project>
+      <Name>IJob</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

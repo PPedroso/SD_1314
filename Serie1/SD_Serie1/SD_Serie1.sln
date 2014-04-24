@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IJob", "IJob\IJob.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Job", "Job\Job.csproj", "{3978E159-EA75-4A50-8EA0-94142BAFEE90}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IBroker", "IBroker\IBroker.csproj", "{067269FB-5C7D-451C-B51A-8DFCD4CDAD77}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,6 +39,10 @@ Global
 		{3978E159-EA75-4A50-8EA0-94142BAFEE90}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3978E159-EA75-4A50-8EA0-94142BAFEE90}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3978E159-EA75-4A50-8EA0-94142BAFEE90}.Release|Any CPU.Build.0 = Release|Any CPU
+		{067269FB-5C7D-451C-B51A-8DFCD4CDAD77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{067269FB-5C7D-451C-B51A-8DFCD4CDAD77}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{067269FB-5C7D-451C-B51A-8DFCD4CDAD77}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{067269FB-5C7D-451C-B51A-8DFCD4CDAD77}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
