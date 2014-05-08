@@ -1,22 +1,22 @@
-﻿using JobImplementation;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Http;
 using System.Threading;
+using IJobNS;
 
 namespace IBrokerCAO
 {
     static class MyBroker
     {
-        static Dictionary<long, Job> dict;
+        static Dictionary<long, IJob> dict;
         static long jobId = 0;
         static readonly Object genericLockObject = new Object();
         static readonly string SERVER_EP = "JobBrokering.soap";
 
 
-        public static Dictionary<long, Job> getDictionary()
+        public static Dictionary<long, IJob> getDictionary()
         {
             if (dict == null)
             {
@@ -24,7 +24,7 @@ namespace IBrokerCAO
                 {
                     if (dict == null)
                     {
-                        dict = new Dictionary<long, Job>();
+                        dict = new Dictionary<long, IJob>();
                     }
                 }
             }
@@ -54,15 +54,15 @@ namespace IBrokerCAO
     {
         public bool RequestJobStatus(long jobId)
         {
-            Dictionary<long, Job> myDict = MyBroker.getDictionary();
+            Dictionary<long, IJob> myDict = MyBroker.getDictionary();
             throw new NotImplementedException();
         }
 
-        public long SubmitJob(Job j)
+        public long SubmitJob(IJob j)
         {
             long id = MyBroker.getCurrentJobId();
-            Dictionary<long, Job> myDict = MyBroker.getDictionary();
-            j.jobId = id;
+            Dictionary<long, IJob> myDict = MyBroker.getDictionary();
+            // = id;
             
             Console.WriteLine("New Job Added (" + id + ")");
             Console.WriteLine(j.getJobDescription());

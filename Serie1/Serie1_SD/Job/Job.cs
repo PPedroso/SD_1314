@@ -2,18 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using IJob;
+using IJobNS;
 
 namespace JobImplementation
 {
     [Serializable]
-    public class Job:IJob.IJob
+    public class Job : IJob
     {
-        public long jobId;
-        public string jobName { get; private set; }
-        public string inputFilePath { get; private set; }
-        public string outputFilePath { get; private set; }
-        public string clientEndPoint { get; private set; }
+        private long jobId;
+        private string jobName;
+        private string inputFilePath;
+        private string outputFilePath;
+        private string clientEndPoint;
 
         public Job(string jobName, string inputFilePath, string outputFilePath, string clientEndPoint)
         {
@@ -32,6 +32,29 @@ namespace JobImplementation
                    "\n clientEndPoint:" + clientEndPoint;
         }
 
-        public static void Main(String[] args) { }
+        public void setJobId(long jobId) {
+            this.jobId = jobId;
+        }
+
+        public long getJobId() {
+            return jobId;
+        }
+        
+        public String getInputFilePath() {
+            return inputFilePath;
+        }
+
+        public String getOuputFilePath() {
+            return outputFilePath;
+        }
+
+        public String getJobName() {
+            return jobName;
+        }
+
+        public String getClientEndPoint() {
+            return clientEndPoint;
+        }
+
     }
 }

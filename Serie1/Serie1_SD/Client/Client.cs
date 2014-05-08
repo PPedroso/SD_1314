@@ -32,9 +32,7 @@ namespace Client
             mb.SubmitJob(j);
             
 
-            Console.WriteLine("Job has completed: " + mb.RequestJobStatus(j.jobId));
-
-            
+            Console.WriteLine("Job has completed: " + mb.RequestJobStatus(j.getJobId()));            
         }
     }
 }
