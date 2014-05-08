@@ -44,7 +44,7 @@ namespace JobImplementation
             return inputFilePath;
         }
 
-        public String getOuputFilePath() {
+        public String getOutputFilePath() {
             return outputFilePath;
         }
 

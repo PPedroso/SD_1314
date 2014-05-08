@@ -7,7 +7,11 @@ namespace IJobNS
 {
     public interface IJob
     {
+        void setJobId(long id);
+        long getJobId();
         string getJobDescription();
-
+        string getInputFilePath();
+        string getOutputFilePath();
+        string getJobName();
     }
 }
