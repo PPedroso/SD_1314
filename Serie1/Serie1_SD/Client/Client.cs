@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using IBrokerCAO;
+using JobImplementation;
+using System;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels;
-using System.Runtime.Remoting.Channels.Tcp;
 using System.Runtime.Remoting.Channels.Http;
-using JobImplementation;
-using IBrokerCAO;
 
 namespace Client
 {
@@ -33,6 +30,11 @@ namespace Client
             //Submissão do trabalho ao broker
             Job j = new Job("service.exe", "inputFile1", "inputFile2", "clientEndPoint");
             mb.SubmitJob(j);
+            
+
+            Console.WriteLine("Job has completed: " + mb.RequestJobStatus(j.jobId));
+
+            
         }
     }
 }
