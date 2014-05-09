@@ -3,36 +3,32 @@ using JobImplementation;
 using System;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels;
-using System.Runtime.Remoting.Channels.Http;
+using System.Runtime.Remoting.Channels.Tcp;
 
 namespace Client
 {
     class Client
     {
-        static readonly string SERVER_EP = "JobBrokering.soap";
+        static readonly string SERVER_EP = "JobBrokering";
 
         static void Main()
         {
             Console.WriteLine("Testing");
 
-            HttpChannel ch = new HttpChannel(0);
+            
+            //Registo do canal
+            TcpChannel ch = new TcpChannel(0);
             ChannelServices.RegisterChannel(ch, false);
 
-            //Registo do objecto remoto
-            RemotingConfiguration.RegisterActivatedClientType(typeof(IMyBrokerCAO),
-                                                              "http://localhost:1234/");
-
-            //Criação do objecto remoto no broker
-            IMyBrokerCAO mb = (IMyBrokerCAO)Activator.GetObject(typeof(IMyBrokerCAO),
-                                                              "http://localhost:1234/" + SERVER_EP);
-
+            //Criação do proxy para o objecto do broker
+            IMyBrokerCAO brokerProxy = (IMyBrokerCAO)Activator.GetObject(typeof(IMyBrokerCAO), "tcp://localhost:1234/" + SERVER_EP);
 
             //Submissão do trabalho ao broker
             Job j = new Job("service.exe", "inputFile1", "inputFile2", "clientEndPoint");
-            mb.SubmitJob(j);
-            
+            brokerProxy.SubmitJob(j);
 
-            Console.WriteLine("Job has completed: " + mb.RequestJobStatus(j.getJobId()));            
+
+            //Console.WriteLine("Job has completed: " + brokerProxy.RequestJobStatus(j.getJobId()));            
         }
     }
 }

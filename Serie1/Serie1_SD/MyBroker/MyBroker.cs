@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels;
-using System.Runtime.Remoting.Channels.Http;
+using System.Runtime.Remoting.Channels.Tcp;
 using System.Threading;
 using IJobNS;
+using IBrokerCAO;
 
 namespace IBrokerCAO
 {
@@ -13,7 +14,7 @@ namespace IBrokerCAO
         static Dictionary<long, IJob> dict;
         static long jobId = 0;
         static readonly Object genericLockObject = new Object();
-        static readonly string SERVER_EP = "JobBrokering.soap";
+        static readonly string SERVER_EP = "JobBrokering";
 
 
         public static Dictionary<long, IJob> getDictionary()
@@ -40,17 +41,20 @@ namespace IBrokerCAO
         static void Main()
         {
 
-            HttpChannel ch = new HttpChannel(1234);
+            //Registo do canal
+            TcpChannel ch = new TcpChannel(1234);
             ChannelServices.RegisterChannel(ch, false);
 
-            RemotingConfiguration.RegisterWellKnownServiceType(typeof(MyBrokerCAO), SERVER_EP, WellKnownObjectMode.Singleton);
-            RemotingConfiguration.RegisterActivatedServiceType(typeof(IMyBrokerCAO));
-            Console.WriteLine("Broker Is Brokering. Press any key to unbrokerate.");
+            //Criação do objecto de submissão de Jobs            
+            MyBrokerObject myBrokerObject = new MyBrokerObject();
+            ObjRef brokerWellKnownObject = RemotingServices.Marshal((MarshalByRefObject) myBrokerObject, SERVER_EP);
+
+            Console.WriteLine("Broker is working, press any key to shut down");
             Console.ReadLine();
         }
     }
 
-    public class MyBrokerCAO : MarshalByRefObject,IMyBrokerCAO
+    public class MyBrokerObject : MarshalByRefObject,IMyBrokerCAO
     {
         public bool RequestJobStatus(long jobId)
         {
