@@ -9,19 +9,28 @@ namespace Client
 {
     class Client
     {
-        static readonly string SERVER_EP = "JobBrokering";
+        static readonly string SERVER_EP = "JobBroker";
 
         static void Main()
         {
             Console.WriteLine("Testing");
 
-            
-            //Registo do canal
-            TcpChannel ch = new TcpChannel(0);
-            ChannelServices.RegisterChannel(ch, false);
 
-            //Criação do proxy para o objecto do broker
-            IMyBrokerCAO brokerProxy = (IMyBrokerCAO)Activator.GetObject(typeof(IMyBrokerCAO), "tcp://localhost:1234/" + SERVER_EP);
+            string configFile = "Client.exe.config";
+            RemotingConfiguration.Configure(configFile,false);
+
+            WellKnownClientTypeEntry[] entries = RemotingConfiguration.GetRegisteredWellKnownClientTypes();
+
+
+
+            IMyBrokerCAO brokerProxy = (IMyBrokerCAO)Activator.GetObject(entries[0].ObjectType, entries[0].ObjectUrl);
+
+            //Registo do canal
+            //TcpChannel ch = new TcpChannel(0);
+            //ChannelServices.RegisterChannel(ch, false);
+
+            ////Criação do proxy para o objecto do broker
+            //IMyBrokerCAO brokerProxy = (IMyBrokerCAO)Activator.GetObject(typeof(IMyBrokerCAO), "tcp://localhost:1234/" + SERVER_EP);
 
             //Submissão do trabalho ao broker
             Job j = new Job("service.exe", "inputFile1", "inputFile2", "clientEndPoint");

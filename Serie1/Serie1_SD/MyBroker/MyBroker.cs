@@ -5,7 +5,6 @@ using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Tcp;
 using System.Threading;
 using IJobNS;
-using IBrokerCAO;
 
 namespace IBrokerCAO
 {
@@ -14,7 +13,7 @@ namespace IBrokerCAO
         static Dictionary<long, IJob> dict;
         static long jobId = 0;
         static readonly Object genericLockObject = new Object();
-        static readonly string SERVER_EP = "JobBrokering";
+        static readonly string SERVER_EP = "JobBroker";
 
 
         public static Dictionary<long, IJob> getDictionary()
@@ -41,13 +40,17 @@ namespace IBrokerCAO
         static void Main()
         {
 
-            //Registo do canal
-            TcpChannel ch = new TcpChannel(1234);
-            ChannelServices.RegisterChannel(ch, false);
+            ////Registo do canal
+            //TcpChannel ch = new TcpChannel(1234);
+            //ChannelServices.RegisterChannel(ch, false);
 
-            //Criação do objecto de submissão de Jobs            
-            MyBrokerObject myBrokerObject = new MyBrokerObject();
-            ObjRef brokerWellKnownObject = RemotingServices.Marshal((MarshalByRefObject) myBrokerObject, SERVER_EP);
+            ////Criação do objecto de submissão de Jobs            
+            //MyBrokerObject myBrokerObject = new MyBrokerObject();
+            //ObjRef brokerWellKnownObject = RemotingServices.Marshal((MarshalByRefObject) myBrokerObject, SERVER_EP);
+
+
+            string configFile = "MyBroker.exe.config";
+            RemotingConfiguration.Configure(configFile, false);
 
             Console.WriteLine("Broker is working, press any key to shut down");
             Console.ReadLine();
