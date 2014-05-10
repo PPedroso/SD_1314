@@ -18,13 +18,18 @@ namespace Client
             private LinkedList<long> listEndedBeforeAddingJob = new LinkedList<long>();
 
             public void addJob(Job j) {
-                lock(lockObj) {
+
+                lock (lockObj)
+                {
                     //verify if it's already over
                     LinkedListNode<long> node = listEndedBeforeAddingJob.Find(j.getJobId());
-                    if (node != null) {
+                    if (node != null)
+                    {
                         listEndedBeforeAddingJob.Remove(node);
                         verifyIfShouldEnd();
-                    } else {
+                    }
+                    else
+                    {
                         dict.Add(j.getJobId(), j);
                     }
                 }
@@ -90,10 +95,14 @@ namespace Client
             JobManager jobManager = new JobManager();
 
             //Submissão do trabalho ao broker
-            Job j = new Job("service.exe", "inputFile1", "inputFile2", "clientEndPoint", new clientEndJob());
-            long id = brokerProxy.SubmitJob(j);
-            j.setJobId(id);
-            jobManager.addJob(j);
+            int numberOfJobs = 1000;
+            for(int i=0;i<numberOfJobs;i++){
+                Job j = new Job("service.exe", "inputFile"+i, "inputFile"+i+1, "clientEndPoint", new clientEndJob());
+                long id = brokerProxy.SubmitJob(j);
+                j.setJobId(id);
+                
+                jobManager.addJob(j);
+            }
 
             Console.ReadLine();         
         }

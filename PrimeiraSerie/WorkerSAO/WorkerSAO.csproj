@@ -4,16 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{4A2A1852-C16A-46C5-8D70-E2A8F157B6E4}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{9B81409D-D9D8-48E5-909F-9A283F65CBF5}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MyBroker</RootNamespace>
-    <AssemblyName>MyBroker</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <RootNamespace>WorkerSAO</RootNamespace>
+    <AssemblyName>WorkerSAO</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -23,7 +22,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -34,7 +32,6 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -42,27 +39,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MyBroker.cs" />
+    <Compile Include="IWorkerSAO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\IBroker\IBrokerCAO.csproj">
-      <Project>{71a32945-2def-4bbf-bd96-62e57c1a0b1b}</Project>
-      <Name>IBrokerCAO</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\IJob\IJob.csproj">
-      <Project>{48d03b46-f8b0-413e-9088-6f169b33a3cb}</Project>
-      <Name>IJob</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Job\Job.csproj">
-      <Project>{59832a40-527b-42e5-a8a5-37d9b9e958cc}</Project>
+      <Project>{2d7d431c-bcbb-46b7-b2be-6b9234bb18ec}</Project>
       <Name>Job</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config">
-      <SubType>Designer</SubType>
-    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -4,12 +4,12 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{4A2A1852-C16A-46C5-8D70-E2A8F157B6E4}</ProjectGuid>
+    <ProjectGuid>{4FF6434D-99DA-432E-BBA9-59798BA0E1BB}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MyBroker</RootNamespace>
-    <AssemblyName>MyBroker</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <RootNamespace>Worker</RootNamespace>
+    <AssemblyName>Worker</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -34,7 +34,6 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -42,27 +41,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MyBroker.cs" />
+    <Compile Include="Worker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\IBroker\IBrokerCAO.csproj">
-      <Project>{71a32945-2def-4bbf-bd96-62e57c1a0b1b}</Project>
-      <Name>IBrokerCAO</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\IJob\IJob.csproj">
-      <Project>{48d03b46-f8b0-413e-9088-6f169b33a3cb}</Project>
-      <Name>IJob</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Job\Job.csproj">
-      <Project>{59832a40-527b-42e5-a8a5-37d9b9e958cc}</Project>
-      <Name>Job</Name>
-    </ProjectReference>
+    <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config">
-      <SubType>Designer</SubType>
-    </None>
+    <ProjectReference Include="..\Job\Job.csproj">
+      <Project>{2d7d431c-bcbb-46b7-b2be-6b9234bb18ec}</Project>
+      <Name>Job</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WorkerSAO\WorkerSAO.csproj">
+      <Project>{9b81409d-d9d8-48e5-909f-9a283f65cbf5}</Project>
+      <Name>WorkerSAO</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

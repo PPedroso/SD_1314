@@ -5,6 +5,8 @@ using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels;
 using System.Threading;
 using JobImplementation;
+using System.IO;
+using System.Diagnostics;
 
 namespace Broker
 {
@@ -12,9 +14,9 @@ namespace Broker
     {
         static Dictionary<long, Job> dict;
         static long jobId = 0;
+        static int baseWorkerPort = 2000;
+        static int numberOfWorkers=0;
         static readonly Object genericLockObject = new Object();
-        //static readonly string SERVER_EP = "JobBroker";
-
 
         public static Dictionary<long, Job> getDictionary()
         {
@@ -33,23 +35,50 @@ namespace Broker
 
         public static long getCurrentJobId()
         {
-            return Interlocked.Increment(ref jobId);
+            long nId = Interlocked.Increment(ref jobId);
+            return nId;
         }
 
+        static void initWorkers(){
+            string configFilePath = createConfigFile();
+            ProcessStartInfo processInfo= new ProcessStartInfo(
+                "C:\\Users\\Pedro\\Escola\\SD\\Series\\PrimeiraSerie\\Worker\\bin\\Debug\\Worker.exe");
+            processInfo.Arguments = configFilePath;            Process newProc = Process.Start(processInfo); 
+        }
+
+        
+        private static string createConfigFile(){
+            StreamWriter file = new StreamWriter("WorkerConfig" + ++numberOfWorkers + ".exe.config");
+            file.WriteLine(@"<?xml version=""1.0""?>");
+            file.WriteLine("<configuration>");
+            file.WriteLine("<system.runtime.remoting>");
+            file.WriteLine("<application>");
+            file.WriteLine("<channels>");
+            file.WriteLine(@"<channel ref=""tcp"" port=""" + (baseWorkerPort+numberOfWorkers) + @""">");
+            file.WriteLine("<clientProviders>");
+            file.WriteLine(@"<formatter ref=""binary""/>");
+            file.WriteLine("</clientProviders>");
+            file.WriteLine("<serverProviders>");
+            file.WriteLine(@"<formatter ref=""binary"" typeFilterLevel=""Full""/>");
+            file.WriteLine("</serverProviders>");
+            file.WriteLine("</channel>");
+            file.WriteLine("</channels>");
+            file.WriteLine("<service>");
+            file.WriteLine(@"<wellknown type=""Worker.MyWorkerObject, Worker"" objectUri=""JobBroker"" mode=""Singleton""/>");
+            file.WriteLine("</service>");
+            file.WriteLine("</application>");
+            file.WriteLine("</system.runtime.remoting>");
+            file.WriteLine("</configuration>");
+            file.Close();
+            return Path.GetFullPath("WorkerConfig" +numberOfWorkers + ".exe.config");
+        }
+        
         static void Main()
         {
-            ////Registo do canal
-            //TcpChannel ch = new TcpChannel(1234);
-            //ChannelServices.RegisterChannel(ch, false);
-
-            ////Criação do objecto de submissão de Jobs            
-            //MyBrokerObject myBrokerObject = new MyBrokerObject();
-            //ObjRef brokerWellKnownObject = RemotingServices.Marshal((MarshalByRefObject) myBrokerObject, SERVER_EP);
-
-
-            string configFile = "Broker.exe.config";
-            RemotingConfiguration.Configure(configFile, false);
-
+          
+            string brokerClientConfigFile = "Broker.exe.config";
+            RemotingConfiguration.Configure(brokerClientConfigFile, false);
+            initWorkers();
             Console.WriteLine("Broker is working, press any key to shut down");
             Console.ReadLine();
         }
@@ -68,14 +97,16 @@ namespace Broker
             long id = Broker.getCurrentJobId();
             Dictionary<long, Job> myDict = Broker.getDictionary();
 
+            j.setJobId(id);
+
             Console.WriteLine("New Job Added (" + id + ")");
             Console.WriteLine(j.getJobDescription());
-            
-            j.setJobId(id);
+
             j.getEndJob().finish(j.getJobId());
 
             //Not thread safe
-            Broker.getDictionary().Add(id, j);
+            
+            myDict.Add(id, j);
             return id;
         }
     }
