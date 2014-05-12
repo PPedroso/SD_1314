@@ -4,7 +4,8 @@ namespace WorkerSAO
 {
     public interface IWorkerSAO
     {
-        bool ResquestJobStatus();
+
+        int getCurrentNumberOfJobs();
         void submitJob(Job jf);
     }
 }

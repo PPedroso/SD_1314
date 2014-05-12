@@ -5,11 +5,20 @@ using System.Linq;
 using System.Text;
 using System.Runtime.Remoting;
 using JobImplementation;
+using System.Threading;
 
 namespace Worker
 {
     class Worker
     {
+
+        private void processJob(Job j)
+        {
+            //Do work
+
+            //Call client endpoint
+        }
+        
         static void Main(string[] args)
         {
             string configFile = args[0];
@@ -23,14 +32,17 @@ namespace Worker
 
     public class MyWorkerObject : MarshalByRefObject, IWorkerSAO
     {
-        public bool ResquestJobStatus()
-        {
-            throw new NotImplementedException();
+        private volatile int currentJobs = 0;
+        
+        public int getCurrentNumberOfJobs() {
+            return currentJobs;
         }
 
         public void submitJob(Job j)
         {
-            throw new NotImplementedException();
+            Console.WriteLine("Job submited: " +j.getJobDescription());
+            Interlocked.Increment(ref currentJobs);
+            j.getEndJob().finish(j.getJobId());
         }
     }
 }
