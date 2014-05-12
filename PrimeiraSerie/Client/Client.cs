@@ -95,14 +95,20 @@ namespace Client
             JobManager jobManager = new JobManager();
 
             //Submissão do trabalho ao broker
-            int numberOfJobs = 1000;
-            for(int i=0;i<numberOfJobs;i++){
-                Job j = new Job("service.exe", "inputFile"+i, "inputFile"+i+1, "clientEndPoint", new clientEndJob());
-                long id = brokerProxy.SubmitJob(j);
-                j.setJobId(id);
+            //int numberOfJobs = 1000;
+            //for(int i=0;i<numberOfJobs;i++){
+            //    Job j = new Job("orderByCrescent.exe", "inputFile"+i, "inputFile"+i+1, "clientEndPoint", new clientEndJob());
+            //    long id = brokerProxy.SubmitJob(j);
+            //    j.setJobId(id);
                 
-                jobManager.addJob(j);
-            }
+            //    jobManager.addJob(j);
+            //}
+
+            Job j = new Job("orderByCrescent.exe", "inputNumbers.txt", "inputNumbers.txt", "clientEndPoint", new clientEndJob());
+            long id = brokerProxy.SubmitJob(j);
+            j.setJobId(id);
+
+            jobManager.addJob(j);
 
             Console.ReadLine();         
         }

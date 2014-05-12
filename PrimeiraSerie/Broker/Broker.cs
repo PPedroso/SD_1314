@@ -154,9 +154,6 @@ namespace Broker
             Console.WriteLine("New Job Added (" + id + ")");
             Console.WriteLine(j.getJobDescription());
 
-
-            j.getEndJob().finish(j.getJobId());
-
             return id;
         }
     }

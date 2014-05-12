@@ -6,17 +6,42 @@ using System.Text;
 using System.Runtime.Remoting;
 using JobImplementation;
 using System.Threading;
+using System.Diagnostics;
+using System.IO;
 
 namespace Worker
 {
-    class Worker
+    static class Worker
     {
+        readonly static string SERVICE_BASE_PATH = "C:\\Users\\Pedro\\Escola\\SD\\Series\\PrimeiraSerie\\Data\\Services\\";
+        readonly static string INPUT_BASE_PATH = "C:\\Users\\Pedro\\Escola\\SD\\Series\\PrimeiraSerie\\Data\\Input\\";
+        readonly static string OUTPUT_BASE_PATH = "C:\\Users\\Pedro\\Escola\\SD\\Series\\PrimeiraSerie\\Data\\Output\\";
 
-        private void processJob(Job j)
+        public static void processJob(Job j)
         {
-            //Do work
+           ProcessStartInfo processInfo = new ProcessStartInfo(SERVICE_BASE_PATH + j.getJobName());
+           processInfo.CreateNoWindow = true;
+           processInfo.UseShellExecute = false; 
+           processInfo.Arguments = INPUT_BASE_PATH + j.getInputFilePath() + " " + OUTPUT_BASE_PATH + j.getOutputFilePath();
+           Process newProc = Process.Start(processInfo); 
+           
+           Console.WriteLine("Processing job:" + j.getJobId());
+           
+           newProc.WaitForExit();
+           
+           int exitcode = newProc.ExitCode;
+           if (exitcode == 0)
+           {
+               Console.WriteLine("Job " + j.getJobId() + " has finished with sucess");
+               j.getEndJob().finish(j.getJobId());
+           }
+           else {
+               Console.WriteLine("Job " + j.getJobId() + " did not finish sucessfully");
+               
+               j.getEndJob().finish(exitcode);
+           }
 
-            //Call client endpoint
+           
         }
         
         static void Main(string[] args)
@@ -42,7 +67,7 @@ namespace Worker
         {
             Console.WriteLine("Job submited: " +j.getJobDescription());
             Interlocked.Increment(ref currentJobs);
-            j.getEndJob().finish(j.getJobId());
+            Worker.processJob(j);
         }
     }
 }
