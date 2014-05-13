@@ -17,7 +17,7 @@ namespace Broker
     public class DictionaryWrapper {
         private static DictionaryWrapper dw = new DictionaryWrapper();
         public static DictionaryWrapper getInstance(){ return dw; }
-
+        
         //readonly Dictionary<long, Job> dict = new Dictionary<long, Job>();
         readonly LinkedList<Job> dict = new LinkedList<Job>();
         long jobId = 0;

@@ -87,6 +87,7 @@ namespace Client
             Console.WriteLine("Client Started");
 
             string configFile = "Client.exe.config";
+
             RemotingConfiguration.Configure(configFile, false);
             WellKnownClientTypeEntry[] entries = RemotingConfiguration.GetRegisteredWellKnownClientTypes();
             IBrokerSAO brokerProxy = (IBrokerSAO)Activator.GetObject(entries[0].ObjectType, entries[0].ObjectUrl);
@@ -104,12 +105,15 @@ namespace Client
             //    jobManager.addJob(j);
             //}
 
-            Job j = new Job("orderByCrescent.exe", "inputNumbers.txt", "inputNumbers.txt", "clientEndPoint", new clientEndJob());
+            Job j = new Job("Sum.exe", "inputNumbers.txt", "inputNumbersSum.txt", "clientEndPoint", new clientEndJob());
             long id = brokerProxy.SubmitJob(j);
             j.setJobId(id);
-
             jobManager.addJob(j);
 
+            j = new Job("OrderByCrescent.exe", "inputNumbers.txt", "inputNumbersOrder.txt", "clientEndPoint", new clientEndJob());
+            id = brokerProxy.SubmitJob(j);
+            j.setJobId(id);
+            jobManager.addJob(j);
             Console.ReadLine();         
         }
     }
