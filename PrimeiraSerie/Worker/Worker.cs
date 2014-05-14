@@ -8,6 +8,7 @@ using JobImplementation;
 using System.Threading;
 using System.Diagnostics;
 using System.IO;
+using BrokerCallback;
 
 namespace Worker
 {
@@ -37,7 +38,6 @@ namespace Worker
            }
            else {
                Console.WriteLine("Job " + j.getJobId() + " did not finish sucessfully");
-               
                j.getEndJob().finish(exitcode);
            }
 
@@ -63,11 +63,22 @@ namespace Worker
             return currentJobs;
         }
 
-        public void submitJob(Job j)
+        public void incrementCurrentJobs() {
+            Interlocked.Increment(ref currentJobs);
+        }
+
+        public void decrementCurrentJobs() { 
+            Interlocked.Decrement(ref currentJobs);
+        }
+
+        public void submitJob(KeyValuePair<Job,IBrokerCallback> k)
         {
+            Job j = k.Key;
             Console.WriteLine("Job submited: " +j.getJobDescription());
             Interlocked.Increment(ref currentJobs);
             Worker.processJob(j);
+            k.Value.finishJob(j.getJobId());
+            Interlocked.Decrement(ref currentJobs);
         }
     }
 }

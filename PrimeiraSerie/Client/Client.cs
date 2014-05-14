@@ -105,16 +105,21 @@ namespace Client
             //    jobManager.addJob(j);
             //}
 
-            Job j = new Job("Sum.exe", "inputNumbers.txt", "inputNumbersSum.txt", "clientEndPoint", new clientEndJob());
-            long id = brokerProxy.SubmitJob(j);
-            j.setJobId(id);
-            jobManager.addJob(j);
+            Job j1 = new Job("Sum.exe", "inputNumbers.txt", "inputNumbersSum.txt", "clientEndPoint", new clientEndJob());
+            long id = brokerProxy.SubmitJob(j1);
+            j1.setJobId(id);
+            jobManager.addJob(j1);
 
-            j = new Job("OrderByCrescent.exe", "inputNumbers.txt", "inputNumbersOrder.txt", "clientEndPoint", new clientEndJob());
-            id = brokerProxy.SubmitJob(j);
-            j.setJobId(id);
-            jobManager.addJob(j);
-            Console.ReadLine();         
+            Job j2 = new Job("OrderByCrescent.exe", "inputNumbers.txt", "inputNumbersOrder.txt", "clientEndPoint", new clientEndJob());
+            id = brokerProxy.SubmitJob(j2);
+            j2.setJobId(id);
+            jobManager.addJob(j2);
+            Console.ReadLine();
+
+            Console.WriteLine("Job 1 status = " + brokerProxy.RequestJobStatus(j1.getJobId()));
+            Console.WriteLine("Job 2 status = " + brokerProxy.RequestJobStatus(j2.getJobId()));
+            
+            Console.ReadLine();
         }
     }
 }

@@ -20,6 +20,7 @@ namespace JobImplementation
         private string clientEndPoint;
         private IEndJob endJob;
 
+
         public Job(string jobName, string inputFilePath, string outputFilePath, string clientEndPoint, IEndJob endJob)
         {
             this.jobName = jobName;

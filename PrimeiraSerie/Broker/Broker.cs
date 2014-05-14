@@ -1,6 +1,7 @@
 ﻿using System;
 using BrokerSAO;
 using WorkerSAO;
+using BrokerCallback;
 using System.Collections.Generic;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels;
@@ -11,7 +12,6 @@ using System.IO;
 using System.Diagnostics;
 
 
-
 namespace Broker
 {
     public class DictionaryWrapper {
@@ -19,11 +19,13 @@ namespace Broker
         public static DictionaryWrapper getInstance(){ return dw; }
         
         //readonly Dictionary<long, Job> dict = new Dictionary<long, Job>();
-        readonly LinkedList<Job> dict = new LinkedList<Job>();
+        readonly LinkedList<JobWrapper> dict = new LinkedList<JobWrapper>();
         long jobId = 0;
         readonly Object genericLockObject = new Object();
 
         private DictionaryWrapper() { } //Certificação que mais ninguem cria uma instancia
+
+
         
         public int getCount()
         {
@@ -36,23 +38,88 @@ namespace Broker
             return nId;
         }
 
+        public string requestJobStatus(long id) {
+            JobWrapper jw = getJobWrapper(id);
+            return jw.getJobStatus();
+        }
+
         public long add(Job j) {
             lock (genericLockObject) {
                 long jobId =getCurrentJobId();
                 j.setJobId(jobId);
-                dict.AddLast(j);
+
+                JobWrapper jw = new JobWrapper(j);
+                dict.AddLast(jw);
                 return jobId;
             }
         }
 
-        public Job remove() {
+        public JobWrapper removeFirst() {
             lock (genericLockObject) {
-                LinkedListNode<Job> j = dict.First;
+                LinkedListNode<JobWrapper> jw = dict.First;
                 dict.RemoveFirst();
-                return j.Value;
+                return jw.Value;
             }
         }
+
+        public void remove(long id) {
+            JobWrapper jw = getJobWrapper(id);
+            
+            lock (genericLockObject) {
+                dict.Remove(jw);
+            }
+        }
+
+        public Job getFirst() {
+            return getFirstWrapper().getJob();
+        }
+        
+        public JobWrapper getFirstWrapper() {
+            lock (genericLockObject) {
+                LinkedListNode<JobWrapper> jw = dict.First;
+                return jw.Value;
+            }
+        }
+
+        public JobWrapper getJobWrapper(long id) {
+            foreach (JobWrapper jw in dict)
+            {
+                if (jw.getJob().getJobId() == id)
+                    return jw;
+            }
+            return null;
+        }
+        
+        public Job getJob(long id){
+            JobWrapper jw = getJobWrapper(id);
+            return jw.getJob();
+
+        }
     }
+
+    public class JobWrapper {
+        private Job j;
+        private status jobStatus;
+
+        enum status { QUEUED, RUNNING, FINISHED};
+
+        public JobWrapper(Job j) {
+            this.j = j;
+            jobStatus = status.QUEUED;
+        }
+
+        public Job getJob() {
+            return j;
+        }
+
+        public void setJobStatusRunning() { jobStatus = status.RUNNING; }
+
+        public void setJobStatusFinished() { jobStatus = status.FINISHED; }
+
+        public string getJobStatus() { return jobStatus.ToString(); }
+
+    }
+
     
     static class Broker
     {
@@ -139,16 +206,28 @@ namespace Broker
         }
     }
 
+    public class MyBrokerCallbackObject : MarshalByRefObject, IBrokerCallback {
+        private DictionaryWrapper myDict = DictionaryWrapper.getInstance();
+
+        public void finishJob(long id) {
+            myDict.getJobWrapper(id).setJobStatusFinished();
+            myDict.remove(id);
+            Console.WriteLine("Job:" + id + " has finished");
+        }
+    }
+    
     public class MyBrokerObject : MarshalByRefObject, IBrokerSAO
     {
-        public bool RequestJobStatus(long jobId)
+        DictionaryWrapper myDict = DictionaryWrapper.getInstance();
+        
+        public string RequestJobStatus(long jobId)
         {
-            throw new NotImplementedException();
+            return myDict.requestJobStatus(jobId);
         }
 
         public long SubmitJob(Job j)
         {
-            DictionaryWrapper myDict = DictionaryWrapper.getInstance();
+
             long id = myDict.add(j);
 
             Console.WriteLine("New Job Added (" + id + ")");
@@ -169,7 +248,9 @@ namespace Broker
                 do
                 {
                     if (myDict.getCount() > 0) { 
-                        Broker.workers.First.Value.Value.submitJob(myDict.remove());
+                        JobWrapper jw = myDict.getFirstWrapper();
+                        jw.setJobStatusRunning();
+                        Broker.workers.First.Value.Value.submitJob(new KeyValuePair<Job,IBrokerCallback>(jw.getJob(),new MyBrokerCallbackObject()));
                     }
                 } while (true);
             }

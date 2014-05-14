@@ -43,10 +43,17 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BrokerCallback\BrokerCallback.csproj">
+      <Project>{87617442-68d0-414d-9fb8-f499e7ac1465}</Project>
+      <Name>BrokerCallback</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Job\Job.csproj">
       <Project>{2d7d431c-bcbb-46b7-b2be-6b9234bb18ec}</Project>
       <Name>Job</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
