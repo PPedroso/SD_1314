@@ -32,7 +32,7 @@ namespace JobImplementation
 
         public string getJobDescription()
         {
-            return " JobId:" + jobId +
+            return "\n JobId:" + jobId +
                    "\n Service:" + jobName +
                    "\n InputFile:" + inputFilePath +
                    "\n OutputFile:" + outputFilePath +

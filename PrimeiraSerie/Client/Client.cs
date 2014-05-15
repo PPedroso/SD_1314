@@ -116,8 +116,8 @@ namespace Client
             jobManager.addJob(j2);
             Console.ReadLine();
 
-            Console.WriteLine("Job 1 status = " + brokerProxy.RequestJobStatus(j1.getJobId()));
-            Console.WriteLine("Job 2 status = " + brokerProxy.RequestJobStatus(j2.getJobId()));
+            Console.WriteLine("Job" + j1.getJobId() + " status = " + brokerProxy.RequestJobStatus(j1.getJobId()));
+            Console.WriteLine("Job" + j2.getJobId() + " status = " + brokerProxy.RequestJobStatus(j2.getJobId()));
             
             Console.ReadLine();
         }

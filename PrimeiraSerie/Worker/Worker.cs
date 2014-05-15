@@ -38,10 +38,8 @@ namespace Worker
            }
            else {
                Console.WriteLine("Job " + j.getJobId() + " did not finish sucessfully");
-               j.getEndJob().finish(exitcode);
+               j.getEndJob().finish(-1);
            }
-
-           
         }
         
         static void Main(string[] args)
@@ -71,13 +69,12 @@ namespace Worker
             Interlocked.Decrement(ref currentJobs);
         }
 
-        public void submitJob(KeyValuePair<Job,IBrokerCallback> k)
+        public void submitJob(Job j ,IBrokerCallback callback)
         {
-            Job j = k.Key;
             Console.WriteLine("Job submited: " +j.getJobDescription());
             Interlocked.Increment(ref currentJobs);
             Worker.processJob(j);
-            k.Value.finishJob(j.getJobId());
+            callback.finishJob(j.getJobId());
             Interlocked.Decrement(ref currentJobs);
         }
     }
