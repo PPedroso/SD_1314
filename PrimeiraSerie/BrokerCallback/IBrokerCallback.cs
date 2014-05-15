@@ -8,6 +8,6 @@ namespace BrokerCallback
 {
     public interface IBrokerCallback
     {
-        void finishJob(long i);
+        void finishJob(int port,long i);
     }
 }

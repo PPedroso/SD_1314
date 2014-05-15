@@ -40,7 +40,10 @@ namespace Broker
             //Alterar para que a porta seja gerada aqui
             int port = baseWorkerPort + ++numberOfWorkers;
             IWorkerSAO worker = createWorker(port);
-            workerDict.Add(port,new WorkerWrapper(worker));
+            lock (workerDict) {
+                workerDict.Add(port, new WorkerWrapper(worker));
+            }
+            
         }
 
         static int baseWorkerPort = 2000;
@@ -52,7 +55,7 @@ namespace Broker
             string configFilePath = createConfigFile(port);
             ProcessStartInfo processInfo = new ProcessStartInfo(
                 "C:\\Users\\Pedro\\Escola\\SD\\Series\\PrimeiraSerie\\Worker\\bin\\Debug\\Worker.exe");
-            processInfo.Arguments = configFilePath;
+            processInfo.Arguments = configFilePath + " " + port;
             Process newWorker = Process.Start(processInfo);
             Console.WriteLine("Starting worker " + numberOfWorkers);
 
@@ -110,9 +113,25 @@ namespace Broker
             {
                 jobDict.Add(j.getJobId(), jw);
             }
-            workerDict.ElementAt(0).Value.addJob(j);
+            getProxy().addJob(j);
             return jobId;
         }
+
+        public void removeJobFromWorker(int port, long jobId) {
+            lock (workerDict) {
+                workerDict[port].removeJob(jobId);
+            }
+            
+        }
+        
+        private WorkerWrapper getProxy() {
+            
+            //Soluçao temporária
+            int id = (int)(jobId % numberOfWorkers);
+            return workerDict.ElementAt(id).Value;
+        }
+
+
 
         //public JobWrapper removeFirst()
         //{

@@ -17,6 +17,7 @@ namespace Worker
         readonly static string SERVICE_BASE_PATH = "C:\\Users\\Pedro\\Escola\\SD\\Series\\PrimeiraSerie\\Data\\Services\\";
         readonly static string INPUT_BASE_PATH = "C:\\Users\\Pedro\\Escola\\SD\\Series\\PrimeiraSerie\\Data\\Input\\";
         readonly static string OUTPUT_BASE_PATH = "C:\\Users\\Pedro\\Escola\\SD\\Series\\PrimeiraSerie\\Data\\Output\\";
+        public static int port;
 
         public static void processJob(Job j)
         {
@@ -45,6 +46,7 @@ namespace Worker
         static void Main(string[] args)
         {
             string configFile = args[0];
+            port = Int32.Parse(args[1]);
             RemotingConfiguration.Configure(configFile, false);
 
             Console.WriteLine("I am a worker and I am working. Press any key for me to stop working...");
@@ -74,7 +76,7 @@ namespace Worker
             Console.WriteLine("Job submited: " +j.getJobDescription());
             Interlocked.Increment(ref currentJobs);
             Worker.processJob(j);
-            callback.finishJob(j.getJobId());
+            callback.finishJob(Worker.port,j.getJobId());
             Interlocked.Decrement(ref currentJobs);
         }
     }

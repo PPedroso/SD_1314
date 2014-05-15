@@ -25,9 +25,16 @@ namespace Broker
         public LinkedList<Job> getJobList() { return jobList; }
         
         public void addJob(Job j) {
-                jobList.AddLast(j);
-                ++currentJobs;
-                workerProxy.submitJob(j, new MyBrokerCallbackObject());
+            jobList.AddLast(j);
+            ++currentJobs;
+            workerProxy.submitJob(j, new MyBrokerCallbackObject());
+        }
+
+        public void removeJob(long jobId) {
+            foreach (Job j in jobList){
+                if (j.getJobId() == jobId)
+                    jobList.Remove(j);
+            }
         }
     }
 }

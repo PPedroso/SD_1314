@@ -19,10 +19,9 @@ namespace Broker
     {
         static readonly int DEFAULT_NUMBER_OF_WORKERS = 4;
 
-        
-
         static void initWorkers(){
-            addWorker();
+            for (int i = 0; i < DEFAULT_NUMBER_OF_WORKERS;++i )
+                addWorker();
         }
 
         static void addWorker() {
@@ -45,9 +44,9 @@ namespace Broker
     public class MyBrokerCallbackObject : MarshalByRefObject, IBrokerCallback {
         private DictionaryWrapper myDict = DictionaryWrapper.getInstance();
 
-        public void finishJob(long id) {
+        public void finishJob(int port,long id) {
             myDict.setJobStatusFinished(id);
-            
+            myDict.removeJobFromWorker(port, id);
             Console.WriteLine("Job:" + id + " has finished");
         }
     }
