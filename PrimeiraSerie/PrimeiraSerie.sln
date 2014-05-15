@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BrokerSAO", "BrokerSAO\BrokerSAO.csproj", "{FC99F55B-47ED-4CFE-9F8F-4EA8CEA2F506}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "Client\Client.csproj", "{322134CD-5539-4100-B87A-34668CB6BB87}"
@@ -19,6 +21,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkerSAO", "WorkerSAO\WorkerSAO.csproj", "{9B81409D-D9D8-48E5-909F-9A283F65CBF5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Worker", "Worker\Worker.csproj", "{4FF6434D-99DA-432E-BBA9-59798BA0E1BB}"
+	ProjectSection(ProjectDependencies) = postProject
+		{87617442-68D0-414D-9FB8-F499E7AC1465} = {87617442-68D0-414D-9FB8-F499E7AC1465}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BrokerCallback", "BrokerCallback\BrokerCallback.csproj", "{87617442-68D0-414D-9FB8-F499E7AC1465}"
 EndProject

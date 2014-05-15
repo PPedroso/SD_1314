@@ -17,16 +17,14 @@ namespace JobImplementation
         private string jobName;
         private string inputFilePath;
         private string outputFilePath;
-        private string clientEndPoint;
         private IEndJob endJob;
 
 
-        public Job(string jobName, string inputFilePath, string outputFilePath, string clientEndPoint, IEndJob endJob)
+        public Job(string jobName, string inputFilePath, string outputFilePath, IEndJob endJob)
         {
             this.jobName = jobName;
             this.inputFilePath = inputFilePath;
             this.outputFilePath = outputFilePath;
-            this.clientEndPoint = clientEndPoint;
             this.endJob = endJob;
         }
 
@@ -35,8 +33,7 @@ namespace JobImplementation
             return "\n JobId:" + jobId +
                    "\n Service:" + jobName +
                    "\n InputFile:" + inputFilePath +
-                   "\n OutputFile:" + outputFilePath +
-                   "\n clientEndPoint:" + clientEndPoint;
+                   "\n OutputFile:" + outputFilePath;
         }
 
         public void setJobId(long jobId)
@@ -62,11 +59,6 @@ namespace JobImplementation
         public String getJobName()
         {
             return jobName;
-        }
-
-        public String getClientEndPoint()
-        {
-            return clientEndPoint;
         }
 
         public IEndJob getEndJob() 
