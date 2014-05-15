@@ -16,18 +16,18 @@ namespace Broker
         private static DictionaryWrapper dw = new DictionaryWrapper();
         public static DictionaryWrapper getInstance() { return dw; }
 
-        //readonly Dictionary<long, Job> dict = new Dictionary<long, Job>();
-        //readonly LinkedList<JobWrapper> dict = new LinkedList<JobWrapper>();
-
         Dictionary<long, JobWrapper> jobDict = new Dictionary<long, JobWrapper>();
         Dictionary<int, WorkerWrapper> workerDict = new Dictionary<int, WorkerWrapper>();
-
 
         long jobId = 0;
         readonly Object genericLockObject = new Object();
 
         private DictionaryWrapper() { } //Certificação que mais ninguem cria uma instancia
 
+        public Dictionary<int, WorkerWrapper> getWorkers() {
+            return workerDict;
+        }
+        
         public long getCurrentJobId()
         {
             long nId = Interlocked.Increment(ref jobId);
@@ -37,7 +37,7 @@ namespace Broker
         public void addWorker(int max_slots ) { 
             
             //Max slots ainda não está a ser usado
-            //Alterar para que a porta seja gerada aqui
+            
             int port = baseWorkerPort + ++numberOfWorkers;
             IWorkerSAO worker = createWorker(port);
             lock (workerDict) {
@@ -120,8 +120,18 @@ namespace Broker
         public void removeJobFromWorker(int port, long jobId) {
             lock (workerDict) {
                 workerDict[port].removeJob(jobId);
+            }   
+        }
+
+        public void removeWorker(int port)
+        {
+            //No caso de um worker ser removido e ainda ter trabalhos por acabar
+            LinkedList<Job> jobList = workerDict[port].getJobList();
+            workerDict.Remove(port);
+            foreach (Job j in jobList) {
+                getProxy().addJob(j);
             }
-            
+
         }
         
         private WorkerWrapper getProxy() {
@@ -130,55 +140,5 @@ namespace Broker
             int id = (int)(jobId % numberOfWorkers);
             return workerDict.ElementAt(id).Value;
         }
-
-
-
-        //public JobWrapper removeFirst()
-        //{
-        //    lock (genericLockObject)
-        //    {
-        //        LinkedListNode<JobWrapper> jw = dict.First;
-        //        dict.RemoveFirst();
-        //        return jw.Value;
-        //    }
-        //}
-
-        //public void remove(long id)
-        //{
-        //    JobWrapper jw = getJobWrapper(id);
-
-        //    lock (genericLockObject)
-        //    {
-        //        dict.Remove(jw);
-        //    }
-        //}
-
-        //public Job getFirst()
-        //{
-        //    return getFirstWrapper().getJob();
-        //}
-
-        //public JobWrapper getFirstWrapper()
-        //{
-        //    LinkedListNode<JobWrapper> jw = dict.First;
-        //    return jw.Value;
-        //}
-
-        //public JobWrapper getJobWrapper(long id)
-        //{
-        //    foreach (JobWrapper jw in dict)
-        //    {
-        //        if (jw.getJob().getJobId() == id)
-        //            return jw;
-        //    }
-        //    return null;
-        //}
-
-        //public Job getJob(long id)
-        //{
-        //    JobWrapper jw = getJobWrapper(id);
-        //    return jw.getJob();
-
-        //}
     }
 }
