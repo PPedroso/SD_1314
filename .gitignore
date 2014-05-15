@@ -176,3 +176,6 @@ UpgradeLog*.htm
 
 # Microsoft Fakes
 FakesAssemblies/
+/Relatórios/*.aux
+/Relatórios/*.out
+/Relatórios/*.toc
