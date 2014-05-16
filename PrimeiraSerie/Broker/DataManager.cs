@@ -35,8 +35,15 @@ namespace Broker
 
         private WorkerWrapper getWorkerWrapper() {
             //Soluçao temporária
-            int id = (int)(jobId % workerNr);
-            return workerDict.ElementAt(id).Value;
+            lock (genericLockObject) {
+                //int id = (int)(jobId % workerNr);
+                //WorkerWrapper wrapper = workerDict.ElementAt(id).Value;
+                WorkerWrapper wrapper = workerDict.OrderBy((x) => x.Value.getCurrentJobs()).First().Value;
+                if (wrapper.getCurrentJobs() == Broker.NUMBER_OF_MAX_SLOTS_FOR_WORKER) {
+                    wrapper = addWorker(Broker.NUMBER_OF_MAX_SLOTS_FOR_WORKER);
+                }
+                return wrapper;
+            }
         }
 
 
@@ -55,11 +62,27 @@ namespace Broker
             JobWrapper jw;
             jobDict.TryGetValue(id, out jw);
             if (jw == null) return "Job not found";
-            Console.WriteLine("JOb status is: " + jw.getJobStatus());
+            Console.WriteLine("Job status is: " + jw.getJobStatus());
             return jw.getJobStatus();
         }
 
         public void add(Job j) {
+            //JobWrapper jw = new JobWrapper(j);
+            //bool succeded = false;
+            //while (!succeded) {
+            //    WorkerWrapper wrapper = getWorkerWrapper();
+            //    lock (wrapper) {
+            //        if (wrapper.getIsFunctioning()) {
+            //            try {
+            //                wrapper.addJob(j);
+            //            } catch (SocketException) {
+            //                wrapper.setIsFunctioning(false);
+            //                removeWorker(wrapper.getPort());
+            //            }
+            //        }
+            //    }
+            //}
+
             JobWrapper jw = new JobWrapper(j);
             lock (genericLockObject) {
                 jobDict.Add(j.getJobId(), jw);
@@ -90,26 +113,30 @@ namespace Broker
         int baseWorkerPort = 2000;
         int workerNr = 0;
 
-        public void addWorker(int max_slots)
+        public WorkerWrapper addWorker(int max_slots)
         {
 
             //Max slots ainda não está a ser usado
 
             int port = baseWorkerPort + ++workerNr;
             IWorkerSAO worker = createWorker(port);
-            lock (workerDict)
-            {
-                workerDict.Add(port, new WorkerWrapper(worker, port));
+            WorkerWrapper wrapper = new WorkerWrapper(worker, port);
+            lock (genericLockObject) {
+                workerDict.Add(port, wrapper);
             }
+            return wrapper;
         }
 
         public void removeWorker(int port)
         {
-            //No caso de um worker ser removido e ainda ter trabalhos por acabar
-            IEnumerable<Job> jobList = workerDict[port].getJobList();
-            workerDict.Remove(port);
-            if (workerDict.Count == 0) {
-                addWorker(3); //TODO - alterar para ficar conforme o outro
+            IEnumerable<Job> jobList = null;
+            lock (genericLockObject) {
+                //No caso de um worker ser removido e ainda ter trabalhos por acabar
+                jobList = workerDict[port].getJobList();
+                workerDict.Remove(port);
+                if (workerDict.Count == 0) {
+                    addWorker(Broker.NUMBER_OF_MAX_SLOTS_FOR_WORKER);
+                }
             }
             foreach (Job j in jobList) {
                 Task.Factory.StartNew(() => add(j));

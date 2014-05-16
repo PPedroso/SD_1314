@@ -15,9 +15,10 @@ using System.Diagnostics;
 
 namespace Broker
 {   
-    static class Broker
+    public static class Broker
     {
         static readonly int DEFAULT_NUMBER_OF_WORKERS = 1;
+        public static readonly int NUMBER_OF_MAX_SLOTS_FOR_WORKER = 2;
 
         static void initWorkers(){
             for (int i = 0; i < DEFAULT_NUMBER_OF_WORKERS;++i )
@@ -25,8 +26,7 @@ namespace Broker
         }
 
         static void addWorker() {
-            DataManager myDict = DataManager.getInstance();
-            int NUMBER_OF_MAX_SLOTS_FOR_WORKER = 4;
+            DataManager myDict = DataManager.getInstance();            
             myDict.addWorker(NUMBER_OF_MAX_SLOTS_FOR_WORKER);
         }
 

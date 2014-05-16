@@ -38,11 +38,14 @@ namespace Client
             };
             TaskScheduler scheduler = TaskScheduler.FromCurrentSynchronizationContext();
 
-
+            Job addedJob = null;
             Task.Factory.StartNew(() => {
-                Job j = new Job(execName, inputPath, outputPath, new clientEndJob(endTask, scheduler));
-                return brokerSAO.SubmitJob(j);
+                Console.WriteLine("começou");
+                addedJob = new Job(execName, inputPath, outputPath, new clientEndJob(endTask, scheduler));
+                return brokerSAO.SubmitJob(addedJob);
             }).ContinueWith((t) => {
+                addedJob.setJobId(t.Result);
+                JobManager.getInstance().addJob(addedJob);
                 logTextBox.Text += String.Format("Started job with id: {0}\n", t.Result);    
             }, CancellationToken.None, TaskContinuationOptions.None, scheduler);
         }

@@ -14,7 +14,7 @@ namespace Broker
         private IWorkerSAO workerProxy;
         private int currentJobs=0;
         private Dictionary<long, Job> dictJobs = new Dictionary<long, Job>();
-        private bool functioning = true;
+        private bool isFunctioning = true;
         private readonly int port;
 
         public WorkerWrapper(IWorkerSAO proxy, int port) {
@@ -25,6 +25,9 @@ namespace Broker
         public IWorkerSAO getWorkerSAO() { return workerProxy; }
         public int getCurrentJobs() { return currentJobs; }
         public int getPort() { return port; }
+        public bool getIsFunctioning() { return isFunctioning; }
+        public void setIsFunctioning(bool isFunctioning) { this.isFunctioning = isFunctioning; }
+
 
         //usado apenas quando o broker foi "abaixo", por isso nao a prob de excepções
         public IEnumerable<Job> getJobList() {

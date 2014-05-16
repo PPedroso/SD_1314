@@ -6,6 +6,7 @@ using System.Text;
 using System.Runtime.Remoting;
 using JobImplementation;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Diagnostics;
 using System.IO;
 using BrokerCallback;
@@ -67,17 +68,18 @@ namespace Worker
         public void submitJob(Job j ,IBrokerCallback callback)
         {
             Console.WriteLine("Job submited: " +j.getJobDescription());
-            Interlocked.Increment(ref currentJobs);
-            
-            if(Worker.processJob(j))
-                Console.WriteLine("Job " + j.getJobId() + " has finished with sucess");
-            else
-                Console.WriteLine("Job " + j.getJobId() + " did not finish sucessfully");
+            Task.Factory.StartNew(() => {
+                Interlocked.Increment(ref currentJobs);
 
-            j.getEndJob().finish(j.getJobId());
-            callback.finishJob(Worker.port, j.getJobId());
-            Interlocked.Decrement(ref currentJobs);
-            
+                if (Worker.processJob(j))
+                    Console.WriteLine("Job " + j.getJobId() + " has finished with sucess");
+                else
+                    Console.WriteLine("Job " + j.getJobId() + " did not finish sucessfully");
+
+                j.getEndJob().finish(j.getJobId());
+                callback.finishJob(Worker.port, j.getJobId());
+                Interlocked.Decrement(ref currentJobs);
+            });            
         }
     }
 }
