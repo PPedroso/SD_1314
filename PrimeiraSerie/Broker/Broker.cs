@@ -17,7 +17,7 @@ namespace Broker
 {   
     static class Broker
     {
-        static readonly int DEFAULT_NUMBER_OF_WORKERS = 4;
+        static readonly int DEFAULT_NUMBER_OF_WORKERS = 1;
 
         static void initWorkers(){
             for (int i = 0; i < DEFAULT_NUMBER_OF_WORKERS;++i )
@@ -25,19 +25,19 @@ namespace Broker
         }
 
         static void addWorker() {
-            DictionaryWrapper myDict = DictionaryWrapper.getInstance();
+            DataManager myDict = DataManager.getInstance();
             int NUMBER_OF_MAX_SLOTS_FOR_WORKER = 4;
             myDict.addWorker(NUMBER_OF_MAX_SLOTS_FOR_WORKER);
         }
 
         static void removeWorker(int port) {
-            DictionaryWrapper myDict = DictionaryWrapper.getInstance();
+            DataManager myDict = DataManager.getInstance();
             myDict.removeWorker(port);
 
         }
         
         static void listWorkers(){
-            DictionaryWrapper myDict = DictionaryWrapper.getInstance();
+            DataManager myDict = DataManager.getInstance();
             Dictionary<int, WorkerWrapper> workers = myDict.getWorkers();
 
             Dictionary<int, WorkerWrapper>.KeyCollection.Enumerator keyList = workers.Keys.GetEnumerator();
@@ -89,7 +89,7 @@ namespace Broker
     }
 
     public class MyBrokerCallbackObject : MarshalByRefObject, IBrokerCallback {
-        private DictionaryWrapper myDict = DictionaryWrapper.getInstance();
+        private DataManager myDict = DataManager.getInstance();
 
         public void finishJob(int port,long id) {
             Console.WriteLine("Here be monsters");
@@ -101,20 +101,20 @@ namespace Broker
     
     public class MyBrokerObject : MarshalByRefObject, IBrokerSAO
     {
-        DictionaryWrapper myDict = DictionaryWrapper.getInstance();
+        DataManager dataManager = DataManager.getInstance();
         
         public string RequestJobStatus(long jobId)
         {
-            return myDict.requestJobStatus(jobId);
+            return dataManager.requestJobStatus(jobId);
         }
 
         public long SubmitJob(Job j)
         {
 
-            long id = myDict.getCurrentJobId();
+            long id = dataManager.getCurrentJobId();
             j.setJobId(id);
             
-            Task t = Task.Run( () => myDict.add(j));
+            Task t = Task.Run( () => dataManager.add(j));
             
             Console.WriteLine("New Job Added (" + id + ")");
             Console.WriteLine(j.getJobDescription());
