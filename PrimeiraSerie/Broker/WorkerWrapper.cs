@@ -27,7 +27,14 @@ namespace Broker
         public void addJob(Job j) {
             jobList.AddLast(j);
             ++currentJobs;
-            workerProxy.submitJob(j, new MyBrokerCallbackObject());
+            try
+            {
+                workerProxy.submitJob(j, new MyBrokerCallbackObject());
+            }
+            catch (Exception e) {
+                Console.WriteLine("Error message: " + e.Message);
+            }
+            
         }
 
         public void removeJob(long jobId) {
