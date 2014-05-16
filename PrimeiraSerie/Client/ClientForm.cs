@@ -54,9 +54,9 @@ namespace Client
                 return;
             }
             Task.Factory.StartNew(() => {
-                return brokerSAO.RequestJobStatus(Convert.ToInt64(id));
+                
             }).ContinueWith((t) => {
-                statusTextBox.Text += String.Format("Status for job with id {0} is: {1}\n", id, t.Result);
+                statusTextBox.Text += String.Format("Status for job with id {0} is: {1}\n", id, brokerSAO.RequestJobStatus(Convert.ToInt64(id)));
             }, CancellationToken.None, TaskContinuationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
         }
     }

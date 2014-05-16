@@ -89,6 +89,7 @@ namespace Client
             //    jobManager.addJob(j);
             //}
 
+            ///*
             Job j1 = new Job("Sum.exe", "inputNumbers.txt", "inputNumbersSum.txt", new clientEndJob());
             long id = brokerProxy.SubmitJob(j1);
             j1.setJobId(id);
@@ -104,10 +105,13 @@ namespace Client
             Console.WriteLine("Job" + j2.getJobId() + " status = " + brokerProxy.RequestJobStatus(j2.getJobId()));
 
             Console.ReadLine();
+            //*/
 
-            //Application.EnableVisualStyles();
-            //Application.SetCompatibleTextRenderingDefault(false);
-            //Application.Run(new ClientForm(brokerProxy));
+            /*
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(new ClientForm(brokerProxy));
+            //*/
         }
     }
 }

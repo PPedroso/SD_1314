@@ -92,6 +92,7 @@ namespace Broker
         private DictionaryWrapper myDict = DictionaryWrapper.getInstance();
 
         public void finishJob(int port,long id) {
+            Console.WriteLine("Here be monsters");
             myDict.setJobStatusFinished(id);
             myDict.removeJobFromWorker(port, id);
             Console.WriteLine("Job:" + id + " has finished");

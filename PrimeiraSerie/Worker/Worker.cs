@@ -14,12 +14,12 @@ namespace Worker
 {
     static class Worker
     {
-        readonly static string SERVICE_BASE_PATH = "C:\\Users\\Pedro\\Escola\\SD\\Series\\PrimeiraSerie\\Data\\Services\\";
-        readonly static string INPUT_BASE_PATH = "C:\\Users\\Pedro\\Escola\\SD\\Series\\PrimeiraSerie\\Data\\Input\\";
-        readonly static string OUTPUT_BASE_PATH = "C:\\Users\\Pedro\\Escola\\SD\\Series\\PrimeiraSerie\\Data\\Output\\";
+        readonly static string SERVICE_BASE_PATH = "..\\..\\..\\Data\\Services\\";
+        readonly static string INPUT_BASE_PATH = "..\\..\\..\\Data\\Input\\";
+        readonly static string OUTPUT_BASE_PATH = "..\\..\\..\\Data\\Output\\";
         public static int port;
 
-        public static void processJob(Job j)
+        public static bool processJob(Job j)
         {
            ProcessStartInfo processInfo = new ProcessStartInfo(SERVICE_BASE_PATH + j.getJobName());
            processInfo.CreateNoWindow = true;
@@ -30,17 +30,10 @@ namespace Worker
            Console.WriteLine("Processing job:" + j.getJobId());
            
            newProc.WaitForExit();
-           
+
            int exitcode = newProc.ExitCode;
-           if (exitcode == 0)
-           {
-               Console.WriteLine("Job " + j.getJobId() + " has finished with sucess");
-               j.getEndJob().finish(j.getJobId());
-           }
-           else {
-               Console.WriteLine("Job " + j.getJobId() + " did not finish sucessfully");
-               j.getEndJob().finish(-1);
-           }
+
+           return (exitcode == 0); 
         }
         
         static void Main(string[] args)
@@ -75,9 +68,16 @@ namespace Worker
         {
             Console.WriteLine("Job submited: " +j.getJobDescription());
             Interlocked.Increment(ref currentJobs);
-            Worker.processJob(j);
-            callback.finishJob(Worker.port,j.getJobId());
+            
+            if(Worker.processJob(j))
+                Console.WriteLine("Job " + j.getJobId() + " has finished with sucess");
+            else
+                Console.WriteLine("Job " + j.getJobId() + " did not finish sucessfully");
+
+            j.getEndJob().finish(j.getJobId());
+            callback.finishJob(Worker.port, j.getJobId());
             Interlocked.Decrement(ref currentJobs);
+            
         }
     }
 }

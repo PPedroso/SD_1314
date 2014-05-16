@@ -29,7 +29,7 @@ namespace Broker
 
         public void setJobStatusRunning() { jobStatus = status.RUNNING; }
 
-        public void setJobStatusFinished() { jobStatus = status.FINISHED; }
+        public void setJobStatusFinished() { Console.WriteLine("job" + getJob().getJobId() + " FINISHED");  jobStatus = status.FINISHED; }
 
         public string getJobStatus() { return jobStatus.ToString(); }
 

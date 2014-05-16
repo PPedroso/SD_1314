@@ -103,6 +103,7 @@ namespace Broker
             JobWrapper jw;
             jobDict.TryGetValue(id, out jw);
             if (jw == null) return "Job not found";
+            Console.WriteLine("JOb status is: " + jw.getJobStatus());
             return jw.getJobStatus();
         }
 
