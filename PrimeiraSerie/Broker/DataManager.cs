@@ -1,0 +1,163 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Threading;
+using JobImplementation;
+using WorkerSAO;
+using System.IO;
+using System.Diagnostics;
+using System.Net.Sockets;
+
+namespace Broker
+{
+    public class DataManager
+    {
+        private static DataManager dw = new DataManager();
+        public static DataManager getInstance() { return dw; }
+
+        Dictionary<long, JobWrapper> jobDict = new Dictionary<long, JobWrapper>();
+        Dictionary<int, WorkerWrapper> workerDict = new Dictionary<int, WorkerWrapper>();
+
+        long jobId = 0;
+        readonly Object genericLockObject = new Object();
+
+        private DataManager() { } //Certificação que mais ninguem cria uma instancia
+
+        //
+        //------------------------------- GETTERS -------------------------------------------------------
+        //
+
+        public Dictionary<int, WorkerWrapper> getWorkers() {
+            return workerDict;
+        }
+
+        private WorkerWrapper getWorkerWrapper() {
+            //Soluçao temporária
+            int id = (int)(jobId % workerNr);
+            return workerDict.ElementAt(id).Value;
+        }
+
+
+        public long getCurrentJobId() 
+        {
+            long nId = Interlocked.Increment(ref jobId);
+            return nId;
+        }
+
+        public void setJobStatusFinished(long jobId) {
+            jobDict[jobId].setJobStatusFinished();
+        }
+
+        public string requestJobStatus(long id)
+        {
+            JobWrapper jw;
+            jobDict.TryGetValue(id, out jw);
+            if (jw == null) return "Job not found";
+            Console.WriteLine("JOb status is: " + jw.getJobStatus());
+            return jw.getJobStatus();
+        }
+
+        public void add(Job j) {
+            JobWrapper jw = new JobWrapper(j);
+            lock (genericLockObject) {
+                jobDict.Add(j.getJobId(), jw);
+                WorkerWrapper wrapper = null;
+                bool succeded = false;
+                while (!succeded) {
+                    try {
+                        wrapper = getWorkerWrapper();
+                        wrapper.addJob(j);
+                        succeded = true;
+                    } catch (SocketException) {
+                        removeWorker(wrapper.getPort());
+                    }
+                }
+            }            
+        }
+
+        public void removeJobFromWorker(int port, long jobId) {
+            lock (genericLockObject) {
+                workerDict[port].removeJob(jobId);
+            }   
+        }
+
+        //
+        //---------------------------------------------- ADD/REMOVE WORKERS ---------------------------------------------------
+        //
+
+        int baseWorkerPort = 2000;
+        int workerNr = 0;
+
+        public void addWorker(int max_slots)
+        {
+
+            //Max slots ainda não está a ser usado
+
+            int port = baseWorkerPort + ++workerNr;
+            IWorkerSAO worker = createWorker(port);
+            lock (workerDict)
+            {
+                workerDict.Add(port, new WorkerWrapper(worker, port));
+            }
+        }
+
+        public void removeWorker(int port)
+        {
+            //No caso de um worker ser removido e ainda ter trabalhos por acabar
+            IEnumerable<Job> jobList = workerDict[port].getJobList();
+            workerDict.Remove(port);
+            if (workerDict.Count == 0) {
+                addWorker(3); //TODO - alterar para ficar conforme o outro
+            }
+            foreach (Job j in jobList) {
+                Task.Factory.StartNew(() => add(j));
+            }
+            
+        }
+
+        private IWorkerSAO createWorker(int port)
+        {
+            //Criação do processo worker
+            string configFilePath = createConfigFile(port);
+            ProcessStartInfo processInfo = new ProcessStartInfo("..\\..\\..\\Worker\\bin\\Debug\\Worker.exe");
+            processInfo.Arguments = configFilePath + " " + port;
+            Process newWorker = Process.Start(processInfo);
+            Console.WriteLine("Starting worker " + workerNr);
+
+            //Criação do proxy para o worker
+            return (IWorkerSAO)Activator.GetObject(typeof(IWorkerSAO), "tcp://localhost:" + port + "/JobWorker");
+        }
+
+        private string createConfigFile(int port)
+        {
+            //Para alterar para a configuração programática
+
+            StreamWriter file = new StreamWriter("WorkerConfig" + port + ".exe.config");
+            file.WriteLine(@"<?xml version=""1.0""?>");
+            file.WriteLine("<configuration>");
+            file.WriteLine("<system.runtime.remoting>");
+            file.WriteLine("<application>");
+            file.WriteLine("<channels>");
+            file.WriteLine(@"<channel ref=""tcp"" port=""" + port + @""">");
+            file.WriteLine("<clientProviders>");
+            file.WriteLine(@"<formatter ref=""binary""/>");
+            file.WriteLine("</clientProviders>");
+            file.WriteLine("<serverProviders>");
+            file.WriteLine(@"<formatter ref=""binary"" typeFilterLevel=""Full""/>");
+            file.WriteLine("</serverProviders>");
+            file.WriteLine("</channel>");
+            file.WriteLine("</channels>");
+            file.WriteLine("<service>");
+            file.WriteLine(@"<wellknown type=""Worker.MyWorkerObject, Worker"" objectUri=""JobWorker"" mode=""Singleton""/>");
+            file.WriteLine("</service>");
+            file.WriteLine("</application>");
+            file.WriteLine("</system.runtime.remoting>");
+            file.WriteLine("</configuration>");
+            file.Close();
+            return Path.GetFullPath("WorkerConfig" + port + ".exe.config");
+        }
+
+    }
+}

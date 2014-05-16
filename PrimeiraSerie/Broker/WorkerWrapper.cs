@@ -13,28 +13,33 @@ namespace Broker
     {
         private IWorkerSAO workerProxy;
         private int currentJobs=0;
-        private LinkedList<Job> jobList = new LinkedList<Job>();
+        private Dictionary<long, Job> dictJobs = new Dictionary<long, Job>();
+        private bool functioning = true;
+        private readonly int port;
 
-
-        public WorkerWrapper(IWorkerSAO proxy) {
+        public WorkerWrapper(IWorkerSAO proxy, int port) {
             workerProxy = proxy;
+            this.port = port;
         }
         
-        public IWorkerSAO getProxy() { return workerProxy; }
+        public IWorkerSAO getWorkerSAO() { return workerProxy; }
         public int getCurrentJobs() { return currentJobs; }
-        public LinkedList<Job> getJobList() { return jobList; }
+        public int getPort() { return port; }
+
+        //usado apenas quando o broker foi "abaixo", por isso nao a prob de excepções
+        public IEnumerable<Job> getJobList() {
+            return dictJobs.Select((x) => x.Value); 
+        }
         
         public void addJob(Job j) {
-            jobList.AddLast(j);
+            dictJobs.Add(j.getJobId(), j);
             ++currentJobs;
             workerProxy.submitJob(j, new MyBrokerCallbackObject());
         }
 
         public void removeJob(long jobId) {
-            foreach (Job j in jobList){
-                if (j.getJobId() == jobId)
-                    jobList.Remove(j);
-            }
+            dictJobs.Remove(jobId);
+            --currentJobs;
         }
     }
 }
