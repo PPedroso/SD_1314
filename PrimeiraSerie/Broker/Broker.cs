@@ -63,12 +63,13 @@ namespace Broker
                 Console.WriteLine("Broker is working in automatic mode, press any key to shut down");
                 Console.ReadLine();
             }
-            else {
+            else if(option== "manual" ) {
                 while (option != "e") {
                     Console.WriteLine("\n Add Worker: a" + 
                                       "\n Remove Worker: r (not working yet)" +
                                       "\n List current Workers: l" +
-                                      "\n Exit: e");
+                                      "\n Exit: e" +
+                                      "\n");
                     option = Console.ReadLine();
 
                     switch (option) { 
@@ -92,10 +93,8 @@ namespace Broker
         private DataManager myDict = DataManager.getInstance();
 
         public void finishJob(int port,long id) {
-            Console.WriteLine("Here be monsters");
             myDict.setJobStatusFinished(id);
             myDict.removeJobFromWorker(port, id);
-            Console.WriteLine("Job:" + id + " has finished");
         }
     }
     

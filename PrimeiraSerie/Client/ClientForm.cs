@@ -40,7 +40,6 @@ namespace Client
 
             Job addedJob = null;
             Task.Factory.StartNew(() => {
-                Console.WriteLine("começou");
                 addedJob = new Job(execName, inputPath, outputPath, new clientEndJob(endTask, scheduler));
                 return brokerSAO.SubmitJob(addedJob);
             }).ContinueWith((t) => {
@@ -61,6 +60,11 @@ namespace Client
             }).ContinueWith((t) => {
                 statusTextBox.Text += String.Format("Status for job with id {0} is: {1}\n", id, brokerSAO.RequestJobStatus(Convert.ToInt64(id)));
             }, CancellationToken.None, TaskContinuationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
+        }
+
+        private void logTextBox_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

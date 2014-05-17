@@ -118,6 +118,7 @@
             this.logTextBox.Size = new System.Drawing.Size(257, 297);
             this.logTextBox.TabIndex = 10;
             this.logTextBox.Text = "";
+            this.logTextBox.TextChanged += new System.EventHandler(this.logTextBox_TextChanged);
             // 
             // idStatusTextBox
             // 

@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using System.IO;
 using BrokerCallback;
+using System.Threading;
+using System.Runtime.Remoting.Channels;
 
 namespace Worker
 {
@@ -19,6 +21,8 @@ namespace Worker
         readonly static string INPUT_BASE_PATH = "..\\..\\..\\Data\\Input\\";
         readonly static string OUTPUT_BASE_PATH = "..\\..\\..\\Data\\Output\\";
         public static int port;
+        public static volatile bool softCloseFlag = false;
+        public static ManualResetEvent closeEvent = new ManualResetEvent(false);
 
         public static bool processJob(Job j)
         {
@@ -43,18 +47,30 @@ namespace Worker
             port = Int32.Parse(args[1]);
             RemotingConfiguration.Configure(configFile, false);
 
-            Console.WriteLine("I am a worker and I am working. Press any key for me to stop working...");
-            Console.ReadLine();
-
+            Console.WriteLine("Worker started.");
+            closeEvent.WaitOne();
         }
     }
 
     public class MyWorkerObject : MarshalByRefObject, IWorkerSAO
     {
-        private volatile int currentJobs = 0;
+        private volatile int currentJobs = 0; 
+
         
         public int getCurrentNumberOfJobs() {
             return currentJobs;
+        }
+
+        public void softClose(){
+            if (currentJobs == 0)
+                closeWorker();
+            else
+                Worker.softCloseFlag = true;
+
+        }
+        
+        private void closeWorker(){
+            Worker.closeEvent.Set();
         }
 
         public void incrementCurrentJobs() {
@@ -79,6 +95,9 @@ namespace Worker
                 j.getEndJob().finish(j.getJobId());
                 callback.finishJob(Worker.port, j.getJobId());
                 Interlocked.Decrement(ref currentJobs);
+                
+                if (Worker.softCloseFlag && (currentJobs == 0))
+                    closeWorker();
             });            
         }
     }

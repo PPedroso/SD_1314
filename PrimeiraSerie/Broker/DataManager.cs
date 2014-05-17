@@ -62,7 +62,6 @@ namespace Broker
             JobWrapper jw;
             jobDict.TryGetValue(id, out jw);
             if (jw == null) return "Job not found";
-            Console.WriteLine("Job status is: " + jw.getJobStatus());
             return jw.getJobStatus();
         }
 
@@ -133,12 +132,23 @@ namespace Broker
             lock (genericLockObject) {
                 //No caso de um worker ser removido e ainda ter trabalhos por acabar
                 jobList = workerDict[port].getJobList();
+
+                try {
+                    workerDict[port].getWorkerSAO().softClose();
+                }
+                catch(Exception e){
+
+                }
+                
                 workerDict.Remove(port);
+                
+                //No caso de ser o ultimo worker a ser removido, adicionar um novo worker
                 if (workerDict.Count == 0) {
                     addWorker(Broker.NUMBER_OF_MAX_SLOTS_FOR_WORKER);
                 }
             }
             foreach (Job j in jobList) {
+                Console.WriteLine("Job re-scheduled: " + j.getJobId());
                 Task.Factory.StartNew(() => add(j));
             }
             

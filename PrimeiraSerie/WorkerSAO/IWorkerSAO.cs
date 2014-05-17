@@ -7,5 +7,6 @@ namespace WorkerSAO
     {
         int getCurrentNumberOfJobs();
         void submitJob(Job j,IBrokerCallback callback);
+        void softClose();
     }
 }
