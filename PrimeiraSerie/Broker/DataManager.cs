@@ -82,15 +82,19 @@ namespace Broker
             //    }
             //}
 
+            
+
             JobWrapper jw = new JobWrapper(j);
             lock (genericLockObject) {
-                jobDict.Add(j.getJobId(), jw);
+                if(!jobDict.ContainsKey(j.getJobId()))
+                    jobDict.Add(j.getJobId(), jw);
                 WorkerWrapper wrapper = null;
                 bool succeded = false;
                 while (!succeded) {
                     try {
                         wrapper = getWorkerWrapper();
                         wrapper.addJob(j);
+                        
                         succeded = true;
                     } catch (SocketException) {
                         removeWorker(wrapper.getPort());
@@ -134,10 +138,10 @@ namespace Broker
                 jobList = workerDict[port].getJobList();
 
                 try {
-                    workerDict[port].getWorkerSAO().softClose();
+                    workerDict[port].getWorkerSAO().closeWorker();
                 }
                 catch(Exception e){
-
+                    Console.WriteLine(e.Message);
                 }
                 
                 workerDict.Remove(port);

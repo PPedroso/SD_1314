@@ -61,15 +61,21 @@ namespace Worker
             return currentJobs;
         }
 
-        public void softClose(){
+        /*public void softClose(){
+            Console.WriteLine("entrou");
             if (currentJobs == 0)
                 closeWorker();
             else
+            { 
+                Console.WriteLine("fez set á flag");
                 Worker.softCloseFlag = true;
+            }
+                
 
-        }
+        }*/
         
-        private void closeWorker(){
+        public void closeWorker(){
+            Console.WriteLine("This just happened");
             Worker.closeEvent.Set();
         }
 
@@ -95,9 +101,12 @@ namespace Worker
                 j.getEndJob().finish(j.getJobId());
                 callback.finishJob(Worker.port, j.getJobId());
                 Interlocked.Decrement(ref currentJobs);
-                
-                if (Worker.softCloseFlag && (currentJobs == 0))
+
+                Console.WriteLine("flag = " + Worker.softCloseFlag + " currentJobs: " + currentJobs);
+                if (Worker.softCloseFlag && (currentJobs == 0)) {
                     closeWorker();
+                }
+                    
             });            
         }
     }
