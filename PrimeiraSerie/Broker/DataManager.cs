@@ -100,9 +100,6 @@ namespace Broker
                     {
                         removeWorker(wrapper.getPort(), false);
                     }
-                    catch (Exception e) {
-                        Console.WriteLine(e.Message);
-                    }
                 }
             }            
         }
@@ -110,6 +107,17 @@ namespace Broker
         public void removeJobFromWorker(int port, long jobId) {
             lock (genericLockObject) {
                 workerDict[port].removeJob(jobId);
+                if (Broker.AUTOMATIC_MODE)
+                {
+                    IEnumerable<WorkerWrapper> enume = workerDict.Where((x) => x.Value.getCurrentJobs() == 0).Select((x) => x.Value);
+                    if (enume.Count() > 1)
+                    {
+                        WorkerWrapper wrapper = enume.First();
+                        removeWorker(wrapper.getPort(), true);
+                    }
+                }
+                
+
             }   
         }
 

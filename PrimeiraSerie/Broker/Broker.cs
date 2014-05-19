@@ -17,6 +17,7 @@ namespace Broker
 {   
     public static class Broker
     {
+        public static bool AUTOMATIC_MODE = false;
         static readonly int DEFAULT_NUMBER_OF_WORKERS = 1;
         public static readonly int NUMBER_OF_MAX_SLOTS_FOR_WORKER = 2;
 
@@ -59,6 +60,7 @@ namespace Broker
             string option = Console.ReadLine();
             if (option == "auto")
             {
+                AUTOMATIC_MODE = true;
                 initWorkers();
                 Console.WriteLine("Broker is working in automatic mode, press any key to shut down");
                 Console.ReadLine();
