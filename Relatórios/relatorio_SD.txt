@@ -1,0 +1,34 @@
+--------------------------------------------------------------------------Estruturas--------------------------------------------------------------------------
+
+DataManager
+O data manager é a class que é usada para armazenamento e manipulação de dados relativos ao broker.
+
+WorkerWrapper: 
+	class de armazenamento de informação relativa ao worker. Contém:
+		(workerProxy) Proxy para comunicação com o worker.
+		(currentJobs)Número de trabalhos que o worker está a processar de momento.
+		(dictJobs) Dicionário com todos os jobs que o worker está a processar de momento.
+		(port)Port associado ao worker.
+		
+JobWrapper:
+	class de armazenamento de informação relativa ao job. Contém:
+		(j) Objecto job com informação para iniciar o processo (id do job,nome do processo, ficheiro de input, ficheiro de output e proxy para a chamada final ao cliente para sinalizar o fim do trabalho).
+		(status) Status que o job tem (Queued, Running, Finished).
+		 
+Esta informação é guardada em duas estruturas
+		(jobDict) Dicionário em que a chave é o id e o value é um objecto JobWrapper. Esta estrutura é usada para guardar o progresso dos jobs para eventual consulta pelo cliente.
+		(workerDict) Dicionário em que a chave é o port do worker e a chave é um WorkerWrapper. É usado para associar trabalhos aos respectivos workers. Em caso de um worker falhar, podemos resubmeter os trabalhos para outro worker.
+
+--------------------------------------------------------------------------Estruturas--------------------------------------------------------------------------
+
+
+
+
+
+
+--------------------------------------------------------------------------Suporte a falhas--------------------------------------------------------------------------
+
+
+No caso de um worker falhar, os trabalhos naquele momento a ser processados vão ser perdidos. Detetamos esta situação quando uma tentativa de acesso a um proxy resulta num Socket Exception. Nesta situação, o broker vai procurar em workerDict os Jobs associados a este worker e vai re-submetelos a outros workers funcionais.
+
+--------------------------------------------------------------------------Suporte a falhas -------------------------------------------------------------------------
