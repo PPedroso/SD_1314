@@ -36,14 +36,9 @@ namespace Broker
         
         public void addJob(Job j) {
             dictJobs.Add(j.getJobId(), j);
+
             ++currentJobs;
-            try
-            {
-                workerProxy.submitJob(j, new MyBrokerCallbackObject());
-            }
-            catch (Exception e) {
-                Console.WriteLine("Error message: " + e.Message);
-            }
+            workerProxy.submitJob(j, new MyBrokerCallbackObject());
             
         }
 

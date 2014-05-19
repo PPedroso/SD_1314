@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using JobImplementation;
+using WorkerSAO;
 
 namespace Broker
 {
@@ -11,9 +12,20 @@ namespace Broker
     {
         private Job j;
         private status jobStatus;
+        private WorkerWrapper worker;
 
-        enum status { QUEUED, RUNNING, FINISHED, FAILED };
+        enum status { QUEUED, RUNNING, FINISHED};
 
+        public WorkerWrapper getWorkerWrapper()
+        {
+            return worker;
+        }
+
+        public void setWorkerWrapper(WorkerWrapper worker)
+        {
+            this.worker = worker;
+        }
+        
         public JobWrapper(Job j)
         {
             this.j = j;
@@ -25,13 +37,9 @@ namespace Broker
             return j;
         }
 
-        public void setJobFailed() { jobStatus = status.FAILED; }
-
         public void setJobStatusRunning() { jobStatus = status.RUNNING; }
 
         public void setJobStatusFinished() { jobStatus = status.FINISHED; }
-        
-        public void setJobStatusFailed() { jobStatus = status.FAILED; }
 
         public string getJobStatus() { return jobStatus.ToString(); }
 

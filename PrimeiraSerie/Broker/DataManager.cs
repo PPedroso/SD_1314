@@ -34,10 +34,7 @@ namespace Broker
         }
 
         private WorkerWrapper getWorkerWrapper() {
-            //Soluçao temporária
             lock (genericLockObject) {
-                //int id = (int)(jobId % workerNr);
-                //WorkerWrapper wrapper = workerDict.ElementAt(id).Value;
                 WorkerWrapper wrapper = workerDict.OrderBy((x) => x.Value.getCurrentJobs()).First().Value;
                 if (wrapper.getCurrentJobs() == Broker.NUMBER_OF_MAX_SLOTS_FOR_WORKER) {
                     wrapper = addWorker(Broker.NUMBER_OF_MAX_SLOTS_FOR_WORKER);
@@ -57,11 +54,25 @@ namespace Broker
             jobDict[jobId].setJobStatusFinished();
         }
 
+        public void setJobStatusRunning(long jobId)
+        {
+            jobDict[jobId].setJobStatusRunning();
+        }
+
         public string requestJobStatus(long id)
         {
             JobWrapper jw;
+            WorkerWrapper worker;
             jobDict.TryGetValue(id, out jw);
             if (jw == null) return "Job not found";
+            try{
+                worker = jw.getWorkerWrapper(); 
+                Console.WriteLine(worker.getWorkerSAO().ping());
+            }catch(SocketException e){
+                removeWorker(jw.getWorkerWrapper().getPort(),false);
+            }
+            
+            
             return jw.getJobStatus();
         }
 
@@ -77,8 +88,12 @@ namespace Broker
                     try
                     {
                         wrapper = getWorkerWrapper();
+                       
+                        //Testing
+                        jw.setWorkerWrapper(wrapper);
                         wrapper.addJob(j);
 
+                        setJobStatusRunning(jw.getJob().getJobId());
                         succeded = true;
                     }
                     catch (SocketException)

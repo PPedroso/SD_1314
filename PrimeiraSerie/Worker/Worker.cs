@@ -21,7 +21,6 @@ namespace Worker
         readonly static string INPUT_BASE_PATH = "..\\..\\..\\Data\\Input\\";
         readonly static string OUTPUT_BASE_PATH = "..\\..\\..\\Data\\Output\\";
         public static int port;
-        public static volatile bool softCloseFlag = false;
         public static ManualResetEvent closeEvent = new ManualResetEvent(false);
 
         public static bool processJob(Job j)
@@ -54,8 +53,11 @@ namespace Worker
 
     public class MyWorkerObject : MarshalByRefObject, IWorkerSAO
     {
-        private volatile int currentJobs = 0; 
+        private volatile int currentJobs = 0;
 
+        public string ping() {
+            return "Pinged:" + Worker.port;
+        }
         
         public int getCurrentNumberOfJobs() {
             return currentJobs;
@@ -88,10 +90,6 @@ namespace Worker
                 callback.finishJob(Worker.port, j.getJobId());
                 Interlocked.Decrement(ref currentJobs);
 
-                if (Worker.softCloseFlag && (currentJobs == 0)) {
-                    closeWorker();
-                }
-                    
             });            
         }
     }

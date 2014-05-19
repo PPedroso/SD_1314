@@ -7,6 +7,7 @@ namespace WorkerSAO
     {
         int getCurrentNumberOfJobs();
         void submitJob(Job j,IBrokerCallback callback);
+        string ping();
         void closeWorker();
     }
 }
