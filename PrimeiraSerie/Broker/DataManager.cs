@@ -66,24 +66,7 @@ namespace Broker
         }
 
         public void add(Job j) {
-            //JobWrapper jw = new JobWrapper(j);
-            //bool succeded = false;
-            //while (!succeded) {
-            //    WorkerWrapper wrapper = getWorkerWrapper();
-            //    lock (wrapper) {
-            //        if (wrapper.getIsFunctioning()) {
-            //            try {
-            //                wrapper.addJob(j);
-            //            } catch (SocketException) {
-            //                wrapper.setIsFunctioning(false);
-            //                removeWorker(wrapper.getPort());
-            //            }
-            //        }
-            //    }
-            //}
-
             
-
             JobWrapper jw = new JobWrapper(j);
             lock (genericLockObject) {
                 if(!jobDict.ContainsKey(j.getJobId()))
@@ -91,13 +74,19 @@ namespace Broker
                 WorkerWrapper wrapper = null;
                 bool succeded = false;
                 while (!succeded) {
-                    try {
+                    try
+                    {
                         wrapper = getWorkerWrapper();
                         wrapper.addJob(j);
-                        
+
                         succeded = true;
-                    } catch (SocketException) {
-                        removeWorker(wrapper.getPort());
+                    }
+                    catch (SocketException)
+                    {
+                        removeWorker(wrapper.getPort(), false);
+                    }
+                    catch (Exception e) {
+                        Console.WriteLine(e.Message);
                     }
                 }
             }            
@@ -130,20 +119,16 @@ namespace Broker
             return wrapper;
         }
 
-        public void removeWorker(int port)
+        public void removeWorker(int port, bool isIntentional)
         {
             IEnumerable<Job> jobList = null;
             lock (genericLockObject) {
                 //No caso de um worker ser removido e ainda ter trabalhos por acabar
                 jobList = workerDict[port].getJobList();
 
-                try {
+                if(isIntentional)
                     workerDict[port].getWorkerSAO().closeWorker();
-                }
-                catch(Exception e){
-                    Console.WriteLine(e.Message);
-                }
-                
+
                 workerDict.Remove(port);
                 
                 //No caso de ser o ultimo worker a ser removido, adicionar um novo worker

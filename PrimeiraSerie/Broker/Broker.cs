@@ -32,7 +32,7 @@ namespace Broker
 
         static void removeWorker(int port) {
             DataManager myDict = DataManager.getInstance();
-            myDict.removeWorker(port);
+            myDict.removeWorker(port,true);
 
         }
         
