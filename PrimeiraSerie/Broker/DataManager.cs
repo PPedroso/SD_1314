@@ -9,6 +9,7 @@ using WorkerSAO;
 using System.IO;
 using System.Diagnostics;
 using System.Net.Sockets;
+using System.Configuration;
 
 namespace Broker
 {
@@ -23,7 +24,10 @@ namespace Broker
         long jobId = 0;
         readonly Object genericLockObject = new Object();
 
-        private DataManager() { } //Certificação que mais ninguem cria uma instancia
+        private DataManager()  //Certificação que mais ninguem cria uma instancia
+        { 
+            baseWorkerPort = Int32.Parse(ConfigurationSettings.AppSettings["baseWorkerPort"]); 
+        } 
 
         //
         //------------------------------- GETTERS -------------------------------------------------------
@@ -89,7 +93,6 @@ namespace Broker
                     {
                         wrapper = getWorkerWrapper();
                        
-                        //Testing
                         jw.setWorkerWrapper(wrapper);
                         wrapper.addJob(j);
 
@@ -125,13 +128,11 @@ namespace Broker
         //---------------------------------------------- ADD/REMOVE WORKERS ---------------------------------------------------
         //
 
-        int baseWorkerPort = 2000;
+        int baseWorkerPort;
         int workerNr = 0;
 
         public WorkerWrapper addWorker(int max_slots)
         {
-
-            //Max slots ainda não está a ser usado
 
             int port = baseWorkerPort + ++workerNr;
             IWorkerSAO worker = createWorker(port);

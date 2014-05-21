@@ -19,7 +19,7 @@ namespace Broker
     {
         public static bool AUTOMATIC_MODE = false;
         static readonly int DEFAULT_NUMBER_OF_WORKERS = 1;
-        public static readonly int NUMBER_OF_MAX_SLOTS_FOR_WORKER = 2;
+        public static readonly int NUMBER_OF_MAX_SLOTS_FOR_WORKER = 4;
 
         static void initWorkers(){
             for (int i = 0; i < DEFAULT_NUMBER_OF_WORKERS;++i )

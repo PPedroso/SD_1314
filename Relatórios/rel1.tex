@@ -114,7 +114,7 @@ Engº Luís \textsc{Assunção} \\
 
 \section{Introdução}
 
-O primeiro trabalho desta cadeira pede que desenvolvamos um sistema de brokering entre clientes e processadores, sem que estes se conheçam. Serve o presente relatório para
+O primeiro trabalho desta cadeira pede que desenvolvamos um sistema de brokering entre clientes e trabalhadores, sem que estes se conheçam. Serve o presente relatório para
 explicar a nossa implementação e para discutir as nossas soluções.
 
 \section{Arquitetura}
@@ -122,6 +122,57 @@ explicar a nossa implementação e para discutir as nossas soluções.
 A solução tem 3 intervenientes distintos. Um cliente que pretende que sejam realizadas tarefas remotamente, um (ou mais) serviço de execução de trabalhos que irá executar trabalhos submetidos pelo cliente, e um intermediário que irá delegar trabalhos aos serviços de execução. A partir deste ponto passaremos a referirmo-nos ao intermediário como \emph{broker} e aos serviços de execução como \emph{workers} ou \emph{worker}.
 
 O cliente pretende que alguém lhe faça um trabalho. Para isso envia um pedido ao \emph{broker} a dizer qual o trabalho que pretende que seja executado. O \emph{broker} decide então qual o \emph{worker} mais adequado para executar essa tarefa, e envia-lhe o pedido do cliente. Assim que seja possível o worker inicia a execução do trabalho, e assim que o trabalho estiver concluído, notifica o cliente e o broker de que o trabalho foi concluído.
+
+
+\medskip
+\includegraphics[height=10cm]{arquitectura}
+
+
+\section{Estruturas}
+
+\subsection{Armazenamento de dados}
+\textbf{DataManager:}
+
+O data manager é a class que é usada para armazenamento e manipulação de dados relativos ao broker.
+
+\begin{description}
+	\item[JobWrapper:]\hfill
+	
+	\emph{Class} de armazenamento de informação relativa ao \emph{Job}. Contém:
+		\begin{description}
+					\item[j:]
+					Objecto job com informação para iniciar o processo (id do job,nome do processo, 		ficheiro de input, ficheiro de output e \emph{proxy} para a chamada final ao cliente para sinalizar o fim do trabalho).
+					\item[status:]
+					\emph{Status} que o job tem (\emph{Queued}, \emph{Running},\emph{Finished}).
+			\end{description}
+	
+	\item[WorkerWrapper:]\hfill
+	
+	\emph{Class} de armazenamento de informação relativa ao \emph{worker}. Contém:
+		\begin{description}
+			\item[workerProxy:] \emph{Proxy} para comunicação com o \emph{worker}.
+			\item[currentJobs:] Número de trabalhos que o \emph{worker} está a processar de momento.
+			\item[dictJobs:] Dicionário com todos os \emph{jobs} que o worker está a processar de momento.
+			\item[port:]\emph{Port} associado ao \emph{worker}.
+		\end{description}
+			
+\end{description}
+
+\medskip	
+Esta informação é guardada em duas estruturas
+		\begin{description}
+		\item[jobDict:] Dicionário onde a chave é o id e o value é um objecto \emph{JobWrapper}. Esta estrutura é usada para guardar o progresso dos \emph{jobs} para eventual consulta pelo cliente.
+		\item[workerDict:] Dicionário onde a chave é o port do worker e a chave é um \emph{WorkerWrapper}. É usado para associar trabalhos aos respectivos \emph{workers}. Em caso de um \emph{worker} falhar, podemos resubmeter os trabalhos para outro \emph{worker}.
+
+	\end{description}
+
+\subsection{\emph{Interfaces}}
+
+\textbf{IWorkerSAO:}
+	Este objecto disponibiliza os serviços do \emph{worker} para o \emph{broker}. Submissão de \emph{Jobs}, fecho do proprio \emph{worker},\emph{ping} e número de \emph{Jobs} a processar de momento. Visto haver um limite de \emph{Jobs}, um \emph{worker} pode ficar bastante tempo a processar, sendo nenhum dos seus métodos acedidos. Os acessos aos objectos dos \emph{workers} também vão ser feitos por uma só entidade, o \emph{broker}. Estes factos invalidam o objecto ser um \emph{Singleton}. Este objecto está definido como \emph{Singlecall}, que só vai viver durante a duração da ligação.
+
+\textbf{IBrokerSAO:}
+	Utilizado para os clientes fazerem submissão de \emph{Jobs} ou para verificar o seu estado. Este objecto disponibiliza serviços do \emph{broker} e está sempre a ser acedido por cada cliente sempre que este quer fazer um \emph{Job} por isso foi definido como \emph{Singleton}.
 
 \section{Implementação}
 
@@ -131,8 +182,8 @@ O cliente regista o \emph{Well Known Type} do \emph{broker} à interface partilh
 Para o pedido de trabalho é criado uma instância do tipo \emph{Job}. Este tipo tem a seguinte informação:
 \begin{enumerate}
 \item O nome do trabalho que se quer executar.
-\item A localização dos ficheiros de input e output.
-\item O identificador do trabalho no \emph{broker}, para pedidos de estado.
+\item Os nomes dos ficheiros input e output.
+\item O identificador do trabalho que é dado pelo \emph{broker}, para pedidos de estado.
 \item Uma interface para que o \emph{worker} possa avisar diretamente o cliente da conclusão do trabalho.
 \end{enumerate}
 
@@ -140,4 +191,47 @@ A existência da interface de comunicação para o worker torna este tipo num \e
 
 Quando o objeto chega ao broker, é colocado num mapa de jobs. Este mapa contém informação sobre os \emph{jobs} submetidos para que seja possível resubmetê-los caso haja necessidade de tal.
 
+\subsection{Modo Automático}
+\subsubsection{Adição de workers}
+A adição de \emph{workers} em modo automático segue um só critério. Se houver demasiados \emph{Jobs} num \emph{worker}(definido pela variável \emph{NUMBER\_OF\_MAX\_SLOTS\_FOR\_WORKER}) no momento da submissão de um novo \emph{Job}, o \emph{broker} irá criar um novo \emph{worker}.
+
+\subsubsection{Remoção de workers}
+A remoção automática é feita segundo o seguinte critério. Se houver mais que um \emph{worker } sem trabalhos, então um deles será removido. Esta verificação acontece sempre que um \emph{Job} seja retirado do \emph{worker}.
+
+\subsection{Modo Manual}
+\subsubsection{Adição de workers}
+A adição de workers é feita simplesmente ao adicionar mais um worker ao dicionário de workers disponiveis. Durante a atribuição de \emph{Jobs} é escolhido o \emph{worker} com menos trabalhos de momento.
+
+\subsubsection{Remoção de workers}
+Remoção de \emph{workers} é feita ao remover um dos \emph{workers} disponiveis do dicionário e caso ainda haja \emph{Jobs} nos \emph{workers}, estes serão resubmetidos a outros \emph{workers}.
+Esta remoção é feita utilizando a porta do \emph{worker} como identificação.
+
+\subsubsection{Listagem de workers}
+É possivel listar os \emph{workers} a trabalhar de momento, visualizando a porta onde estão configurados.
+
+
+\subsection{Configuração dos objectos remotos}
+A configuração dos objectos remotos(\emph{BrokerSAO} e \emph{WorkerSAO}) é realizada através de ficheiros de configuração. O ficheiro de configuração do \emph{BrokerSAO} contém o tipo de ligação, o \emph{port } da ligação, o nome do \emph{well-known object } e o \emph{port} base usado para a criação dos ficheiros de configuração dos \emph{workers}.
+Os ficheiros de configuração do \emph{worker} são criados pelo \emph{broker} localmente, que envia o caminho relativo a cada \emph{worker} para este utilizar na sua configuração. O \emph{port} a utilizar por cada \emph{worker} é escolhido incrementando um \emph{port} base que está presente no ficheiro de configuração do \emph{broker}.
+
+
+\textbf{Limitação:} Estamos a admitir que os \emph{workers } estão a trabalhar na mesma máquina, assim podemos passsar só o caminho dos ficheiros de configuração para os \emph{workers}. No caso dos \emph{workers} estarem a trabalhar em máquinas diferentes, seria necessário passar os parãmetros e seria o próprio \emph{worker} a fazer a sua configuração localmente.
+
+
+\subsection{Estado do \emph{Job}}
+A nossa aplicação actualiza e guarda o estado de cada \emph{Job} ao longo do seu percurso. Quando o \emph{Job} é submetido está QUEUED, quando é enviado para o worker está RUNNING, e finalmente quando acaba está FINISHED. 
+Estas actualizações são feitas pelo \emph{broker} sendo a ultima feita pelo \emph{worker} que, ao terminar o trabalho, notifica através do \emph{proxy BrokerCallback} qual o \emph{Job} que acabou.
+O cliente pode a qualquer momento fazer uma verificação do estado do \emph{Job} através da interface partilhada \emph{IBrokerSAO}.
+
+\textbf{Limitação:} Um cliente pode saber o estado de um Job  que não tenha sido ele próprio a criar. Prevenir esta situação implicava verificações adicionais e identificação de cada cliente que iria criar mais stress sobre o \emph{broker} e isto não era o objectivo deste trabalho.
+
+
+
+
+\subsection{Suporte e deteção de falhas}
+
+A deteção de falhas de um \emph{worker} ocorre quando há uma tentativa de ligação através do \emph{WorkerSAO} e ocorre uma \emph{socket} exception. Estas deteções são feitas na atribuição de um trabalho ou na verificação de estado do trabalho. Na verificação, como temos os estados do trabalho guardados no \emph{broker} nao necessitando portanto fazer uma ligação com o \emph{worker}, fazemos um \emph{ping} ao \emph{worker} associado para verificar a ligação.
+
+No caso de um \emph{worker} falhar, os trabalhos naquele momento a ser processados vão ser perdidos. Detetamos esta situação quando uma tentativa de acesso a um proxy resulta numa \emph{Socket Exception}. Nesta situação, o \emph{broker} vai procurar em \emph{workerDict} os \emph{Jobs} associados a este \emph{worker} e vai re-submetelos a outros \emph{workers} funcionais.	
+	
 \end{document}

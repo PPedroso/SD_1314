@@ -19,16 +19,34 @@ Esta informação é guardada em duas estruturas
 		(jobDict) Dicionário em que a chave é o id e o value é um objecto JobWrapper. Esta estrutura é usada para guardar o progresso dos jobs para eventual consulta pelo cliente.
 		(workerDict) Dicionário em que a chave é o port do worker e a chave é um WorkerWrapper. É usado para associar trabalhos aos respectivos workers. Em caso de um worker falhar, podemos resubmeter os trabalhos para outro worker.
 
---------------------------------------------------------------------------Estruturas--------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
+--------------------------------------------------------------------------Estado do Job--------------------------------------------------------------------------
+
+A nossa aplicação actualiza e guarda o estado de cada Job ao longo do seu percurso. Quando o trabalho é submetido está QUEUED, quando é enviado para o worker está RUNNING, e finalmente quando acaba está FINISHED. 
+Estas actualizações são feitas pelo broker sendo a ultima feita pelo worker que, ao terminar o trabalho, notifica através do proxy BrokerCallback qual o trabalho que acabou.
+O cliente pode a qualquer momento fazer uma verificação do estado do trabalho através da interface partilhada IBrokerSAO.
+
+Limitações: Um cliente pode saber o estado de um Job  que não tenha sido ele próprio a criar. Prevenir esta situação implicava verificações adicionais e identificação de cada cliente que iria criar mais stress sobre o broker e isto não era o objectivo deste trabalho.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
+--------------------------------------------------------------------------Suporte e deteção de falhas--------------------------------------------------------------------------
 
-
---------------------------------------------------------------------------Suporte a falhas--------------------------------------------------------------------------
-
+A deteção de falhas de um worker ocorre quando há uma tentativa de ligação através do WorkerSAO e ocorre uma socket exception. Estas deteções são feitas na atribuição de um trabalho ou na verificação de estado do trabalho. Na verificação, como temos os estados do trabalho guardados no broker nao necessitando portanto fazer uma ligação com o worker, fazemos um ping ao worker associado para verificar a ligação.
 
 No caso de um worker falhar, os trabalhos naquele momento a ser processados vão ser perdidos. Detetamos esta situação quando uma tentativa de acesso a um proxy resulta num Socket Exception. Nesta situação, o broker vai procurar em workerDict os Jobs associados a este worker e vai re-submetelos a outros workers funcionais.
 
---------------------------------------------------------------------------Suporte a falhas -------------------------------------------------------------------------
+--------------------------------------------------------------------------Suporte e deteção de falhas -------------------------------------------------------------------------
+
+Interfaces usadas
+
+IWorkerSAO:
+	Este objecto disponibiliza os serviços do worker para o broker. Submissão de trabalho, fecho do proprio worker,ping e número de Jobs a processar de momento. Visto haver um limite de Jobs, um worker pode ficar bastante tempo a processar, sendo nenhum dos seus métodos acedidos. Os acessos aos objectos dos worker também vão ser feitos por uma só entidade, o broker. Estes factos invalidam o objecto ser um Singleton. Este objecto está definido como Singlecall, que só vai viver durante a duração da ligação.
+
+IBrokerSAO:
+	Utilizado para os clientes fazerem submissão de Jobs ou para verificar o seu estado. Este objecto disponibiliza serviços do broker e está sempre a ser acedido por cada cliente sempre que este quer fazer um Job por isso foi definido como Singleton.
+
+
