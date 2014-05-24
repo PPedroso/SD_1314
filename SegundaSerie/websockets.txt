@@ -1,0 +1,22 @@
+WebSocket main ideas
+
+- HTML5
+- Full Duplex using only 1 socket
+
+- A WebSocket detects the presence of a proxy server and automatically sets up a tunnel to pass through the proxy. The tunnel is established by issuing an HTTP CONNECT statement to the proxy server, which requests for the proxy server to open a TCP/IP connection to a specific host and port
+
+
+
+- Start as an HTTP connection and later requests a protocol switch to websocket
+_______________________________________________
+Header for the request to update to websocket
+_______________________________________________
+GET ws://echo.websocket.org/?encoding=text HTTP/1.1 
+Origin: http://websocket.org 
+Cookie: __utma=99as 
+Connection: Upgrade 
+Host: echo.websocket.org 
+Sec-WebSocket-Key: uRovscZjNol/umbTt5uKmw== 
+Upgrade: websocket 
+Sec-WebSocket-Version: 13
+_______________________________________________
