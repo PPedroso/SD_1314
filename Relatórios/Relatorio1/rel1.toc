@@ -1,0 +1,17 @@
+\select@language {portuguese}
+\contentsline {section}{\numberline {1}Introdu\IeC {\c c}\IeC {\~a}o}{1}{section.1}
+\contentsline {section}{\numberline {2}Arquitetura}{1}{section.2}
+\contentsline {section}{\numberline {3}Estruturas}{2}{section.3}
+\contentsline {subsection}{\numberline {3.1}Armazenamento de dados}{2}{subsection.3.1}
+\contentsline {subsection}{\numberline {3.2}\emph {Interfaces}}{2}{subsection.3.2}
+\contentsline {section}{\numberline {4}Implementa\IeC {\c c}\IeC {\~a}o}{3}{section.4}
+\contentsline {subsection}{\numberline {4.1}Modo Autom\IeC {\'a}tico}{3}{subsection.4.1}
+\contentsline {subsubsection}{\numberline {4.1.1}Adi\IeC {\c c}\IeC {\~a}o de workers}{3}{subsubsection.4.1.1}
+\contentsline {subsubsection}{\numberline {4.1.2}Remo\IeC {\c c}\IeC {\~a}o de workers}{3}{subsubsection.4.1.2}
+\contentsline {subsection}{\numberline {4.2}Modo Manual}{3}{subsection.4.2}
+\contentsline {subsubsection}{\numberline {4.2.1}Adi\IeC {\c c}\IeC {\~a}o de workers}{3}{subsubsection.4.2.1}
+\contentsline {subsubsection}{\numberline {4.2.2}Remo\IeC {\c c}\IeC {\~a}o de workers}{4}{subsubsection.4.2.2}
+\contentsline {subsubsection}{\numberline {4.2.3}Listagem de \emph {workers}}{4}{subsubsection.4.2.3}
+\contentsline {subsection}{\numberline {4.3}Configura\IeC {\c c}\IeC {\~a}o dos objectos remotos}{4}{subsection.4.3}
+\contentsline {subsection}{\numberline {4.4}Estado do \emph {Job}}{4}{subsection.4.4}
+\contentsline {subsection}{\numberline {4.5}Suporte e dete\IeC {\c c}\IeC {\~a}o de falhas}{4}{subsection.4.5}
