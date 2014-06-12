@@ -113,7 +113,10 @@
 
 \section{Resumo}
 
-\textsf{O objectivo deste trabalho é fazer uma síntese do protocolo websocket}
+Com este trabalho pretendemos fazer uma síntese do protocolo \emph{WebSocket}. O objectivo deste protocolo é disponibilizar um meio de ter uma ligação que seja full-duplex (comunicação pode ser feita nos dois sentidos) utilizando um só socket assim como simplificar o processo.
+
+É um protocolo baseado em tcp, utilizando HTTP somente durant o \emph{handshake}.
+
 \begin{itemize}
 \item Apresentar a sua estrutura
 \item Apresentar e discutir vantagens/desvantagens
@@ -122,10 +125,16 @@
 %----------------------------------------------------------------------------------------
 \newpage
 
-\section{Initial connection}
-\textsf{A ligação inicial é realizada como uma ligação HTTP. Depois do contacto, é enviado um \emph{request} para que o protocolo seja alterado para websocket através do seguinte \emph{header}:}\\[0.5cm]
+\section{\emph{WebSocket} }
+
+\section{\emph{Handshake}}
+\textsf{A ligação inicial é realizada como uma ligação HTTP. Isto acontece para assegurar compatibilidade com protocolos mais antigos. Depois do contacto, é enviado um \emph{request} para que o protocolo seja alterado para websocket através do seguinte \emph{header}:}\\[0.5cm]
 
 \includegraphics[height=3.5cm]{websocketUpdateRequest}
+
+\textsf{text text text}\\[0.5cm]
+
+\includegraphics[height=3.5cm]{websocketUpdateResponse}
 
 
 %----------------------------------------------------------------------------------------
