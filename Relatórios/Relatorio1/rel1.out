@@ -1,0 +1,16 @@
+\BOOKMARK [1][-]{section.1}{Introdu\347\343o}{}% 1
+\BOOKMARK [1][-]{section.2}{Arquitetura}{}% 2
+\BOOKMARK [1][-]{section.3}{Estruturas}{}% 3
+\BOOKMARK [2][-]{subsection.3.1}{Armazenamento de dados}{section.3}% 4
+\BOOKMARK [2][-]{subsection.3.2}{Interfaces}{section.3}% 5
+\BOOKMARK [1][-]{section.4}{Implementa\347\343o}{}% 6
+\BOOKMARK [2][-]{subsection.4.1}{Modo Autom\341tico}{section.4}% 7
+\BOOKMARK [3][-]{subsubsection.4.1.1}{Adi\347\343o de workers}{subsection.4.1}% 8
+\BOOKMARK [3][-]{subsubsection.4.1.2}{Remo\347\343o de workers}{subsection.4.1}% 9
+\BOOKMARK [2][-]{subsection.4.2}{Modo Manual}{section.4}% 10
+\BOOKMARK [3][-]{subsubsection.4.2.1}{Adi\347\343o de workers}{subsection.4.2}% 11
+\BOOKMARK [3][-]{subsubsection.4.2.2}{Remo\347\343o de workers}{subsection.4.2}% 12
+\BOOKMARK [3][-]{subsubsection.4.2.3}{Listagem de workers}{subsection.4.2}% 13
+\BOOKMARK [2][-]{subsection.4.3}{Configura\347\343o dos objectos remotos}{section.4}% 14
+\BOOKMARK [2][-]{subsection.4.4}{Estado do Job}{section.4}% 15
+\BOOKMARK [2][-]{subsection.4.5}{Suporte e dete\347\343o de falhas}{section.4}% 16
