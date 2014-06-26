@@ -1,0 +1,222 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Title page template been downloaded from:
+% http://www.LaTeXTemplates.com
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[a4paper]{article}
+\RequirePackage[utf8]{inputenc}
+\usepackage[portuguese]{babel}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{empheq}
+\usepackage{framed}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=Java,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3,
+  literate=
+  {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+  {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+  {à}{{\`a}}1 {è}{{\'e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+  {À}{{\`A}}1 {È}{{\'E}}1 {Ì}{{\`I}}1 {Ò}{{\`O}}1 {Ù}{{\`U}}1
+  {ä}{{\"a}}1 {ë}{{\"e}}1 {ï}{{\"i}}1 {ö}{{\"o}}1 {ü}{{\"u}}1
+  {Ä}{{\"A}}1 {Ë}{{\"E}}1 {Ï}{{\"I}}1 {Ö}{{\"O}}1 {Ü}{{\"U}}1
+  {â}{{\^a}}1 {ê}{{\^e}}1 {î}{{\^i}}1 {ô}{{\^o}}1 {û}{{\^u}}1
+  {Â}{{\^A}}1 {Ê}{{\^E}}1 {Î}{{\^I}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1
+  {œ}{{\oe}}1 {Œ}{{\OE}}1 {æ}{{\ae}}1 {Æ}{{\AE}}1 {ß}{{\ss}}1
+  {ç}{{\c c}}1 {Ç}{{\c C}}1 {ø}{{\o}}1 {å}{{\r a}}1 {Å}{{\r A}}1
+  {€}{{\EUR}}1 {£}{{\pounds}}1
+}
+
+\newlength\dlf  % Define a new measure, dlf
+\newcommand\alignedbox[2]{
+% Argument #1 = before & if there were no box (lhs)
+% Argument #2 = after & if there were no box (rhs)
+&  % Alignment sign of the line
+{
+\settowidth\dlf{$\displaystyle #1$}  
+    % The width of \dlf is the width of the lhs, with a displaystyle font
+\addtolength\dlf{\fboxsep+\fboxrule}  
+    % Add to it the distance to the box, and the width of the line of the box
+\hspace{-\dlf}  
+    % Move everything dlf units to the left, so that & #1 #2 is aligned under #1 & #2
+\boxed{#1 #2}
+    % Put a box around lhs and rhs
+}
+}
+
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}} % Defines a new command for the horizontal lines, change thickness here
+
+\begin{document}
+
+\begin{titlepage}
+
+\center % Center everything on the page
+ 
+%----------------------------------------------------------------------------------------
+%	HEADING SECTIONS
+%----------------------------------------------------------------------------------------
+
+\textsc{\LARGE Instituto Superior de Engenharia de Lisboa}\\[1.5cm] % Name of your university/college
+\textsc{\Large Sistemas Distribuidos}\\[0.5cm] % Major heading such as course name
+
+%----------------------------------------------------------------------------------------
+%	TITLE SECTION
+%----------------------------------------------------------------------------------------
+
+\HRule \\[0.4cm]
+{ \huge \bfseries Relatório do trabalho de investigação}\\[0.4cm] % Title of your document
+{ \Large \bfseries Websockets}\\
+\HRule \\[1.5cm]
+ 
+%----------------------------------------------------------------------------------------
+%	AUTHOR SECTION
+%----------------------------------------------------------------------------------------
+
+\begin{minipage}{0.4\textwidth}
+\begin{flushleft} \large
+\emph{Autoria:}\\
+33724 David \textsc{Raposo} \\
+32632 Pedro \textsc{Pedroso} \\
+33404 Ricardo \textsc{Mata} \\
+\end{flushleft}
+\end{minipage}
+~
+\begin{minipage}{0.4\textwidth}
+\begin{flushright} \large
+\emph{Em coordenação com:} \\
+Engº Luís \textsc{Falcão} \\ % Supervisor's Name
+Engº José \textsc{Simão} \\ 
+\end{flushright}
+\end{minipage}\\[4cm]
+
+%----------------------------------------------------------------------------------------
+%	DATE SECTION
+%----------------------------------------------------------------------------------------
+{\large \today}\\[3cm] % Date, change the \today to a set date if you want to be precise
+
+\vfill % Fill the rest of the page with whitespace
+
+\end{titlepage}
+
+%----------------------------------------------------------------------------------------
+%	ÍNDICE
+%----------------------------------------------------------------------------------------
+
+\newpage
+\thispagestyle{empty} %Remove a númeração da página
+
+\tableofcontents
+
+%----------------------------------------------------------------------------------------
+%	BODY
+%----------------------------------------------------------------------------------------
+\newpage
+\setcounter{page}{1} %começa a contar as páginas apartir do 1
+
+\section{Introdução}
+
+Com os avanços tecnológicos que têm havido nos últimos anos, é cada vez mais fácil perder a noção
+do que está a acontecer dentro dos computadores. Isto faz com que se tenha algum desleixo perante os recursos que se usam. No entanto, com os dispositivos móveis em constante crescimento\footnote{Fonte: \url{http://www.digitalbuzzblog.com/infographic-2013-mobile-growth-statistics/}}, volta a tornar-se importante a otimização dos recursos usados.
+
+A compatibilidade entre diferentes plataformas é garantida pela utilização de protocolos que faz com que cada plataforma saiba comunicar entre si. Um exemplo desses protocolos é o protocolo HTTP\footnote{A sigla HTTP vem de \emph{HyperText Transfer Protocol}, que significa Protocolo de Transmissão de Hipertexto.}, que surgiu como necessidade de transferir conteúdo estático (páginas de hipertexto). Desde a sua implementação, o protocolo foi beneficiando de revisões que expandiram o seu uso original. Contudo, o propósito continuava a ser o mesmo: transmissão de conteúdo estático entre dispositivos. 
+
+FALAR SOBRE WEB APPS
+
+\section{Visão global}
+
+Antes da adoção dos \emph{websockets}, os pedidos web eram feitos puramente através do protocolo HTTP. Cada pedido estava sujeito às limitações deste protocolo, como por exemplo, cada pedido tinha que conter o cabeçalho HTTP correspondente, e cada pedido estava afeto a apenas uma conexão.
+
+Nas aplicações simples, isto não é problemático. Caso fizessem poucos pedidos, era criadas poucas ligações, e se pedissem muitos dados de uma só vez o "`\emph{overhead}"' do cabeçalho era negligenciável. Contudo, em aplicações mais complexas que precisem de dados não estáticos, ou gerados em tempo real isto é um problema que pode arrastar a performance do sistema todo.
+
+Os pedidos de informação não estática são geralmente feitos das seguintes formas:
+\begin{enumerate}
+	\item{\emph{Polling}:} Consiste em efetuar periodicamente pedidos a questionar o servidor se existem novos dados a obter. Isto trás um custo elevado, pois ao serem feitos constantemente pedidos é necessário estar a criar novas conexões constantemente, e podem haver bastantes pedidos a que o servidor não tenha informação para enviar. Isto adicionado ao facto de que é necessário incluir os cabeçalhos HTTP causa um constrangimento enorme à rede.
+	\item{\emph{Long-Polling:}} Semelhante ao \emph{polling}, mas o servidor prende a ligação até que haja informação a enviar. Assim que haja informação a enviar, o servidor envia-a e, seguindo o protocolo HTTP, fecha a ligação. É mais vantajoso que o \emph{polling}, pois os recursos só são libertados assim que não forem necessários, apesar de ter de ser necessário criar novas ligações para novos pedidos.
+	\item{\emph{Pushing:}}  É feito um pedido de dados ao servidor. O servidor mantém a ligação aberta e vai enviando dados ao cliente assim que houverem novos dados. É mais vantajoso face a \emph{Long-Polling} na medida que o cliente recebe novos dados sem ter de iniciar uma nova ligação, no entanto, pedidos seguintes têm que iniciar uma nova ligação.
+\end{enumerate}
+
+Estes métodos de pedidos são desvantajosos para o enorme volume de dados a que as aplicações complexas estão sujeitas, ainda para mais com o constante crescimento de tráfego da internet\footnote{Fonte: \url{http://en.wikipedia.org/wiki/Global_Internet_usage}}, o que faz com que seja desejável que as aplicações sejam o mais eficiente possível.
+
+O que os \emph{websockets} trazem é uma nova forma de fazer pedidos, reaproveitando a ligação do pedido original. Isto permite fazer vários pedidos sem o custo adicional acrescido dos cabeçalhos HTTP nem da criação de novas ligações.
+
+\section{Funcionamento}
+
+Para utilizar \emph{websockets} é necessário fazer um pedido inicial através de HTTP. A informação contida no cabeçalho indicará ao servidor que se pretende fazer a comunicação através de \emph{websockets}. O servidor depois responde com sucesso ou insucesso, dependendo se suporta ou não o protocolo.
+
+\begin{figure}
+	\begin{framed}
+		\texttt{\small GET /chat HTTP/1.1 \\
+						Host: server.example.com \\
+						Upgrade: websocket\\
+						Connection: Upgrade\\
+						Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==\\
+						Origin: http://example.com\\
+						Sec-WebSocket-Protocol: chat, superchat\\
+						Sec-WebSocket-Version: 13\\
+		}		
+	\end{framed}
+	\caption{Pedido de um cliente}
+  \label{fig:httpHeaderReq}
+\end{figure}
+
+\begin{figure}
+	\begin{framed}
+		\texttt{\small HTTP/1.1 101 Switching Protocols\\
+					Upgrade: websocket\\
+					Connection: Upgrade\\
+					Sec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=\\
+					Sec-WebSocket-Protocol: chat\\
+		}
+	\end{framed}
+		\caption{Resposta de um servidor}
+  \label{fig:httpHeaderRspS}
+\end{figure}
+
+Nas figuras ~\ref{fig:httpHeaderReq} e ~\ref{fig:httpHeaderRspS} podemos ver um exemplo de cabeçalhos \emph{HTTP} usados no \emph{handshake} inicial entre um cliente e um servidor. No fundo, são cabeçalhos HTTP perfeitamente normais, com pares de campos//valor. Podemos ver que o cliente pretende efetuar a comunicação através de um canal \emph{websocket} através do campo \emph{Connection}. O campo \emph{Connection}, quando contem o valor \emph{Upgrade} indica que a comunicação deve passar a ser feita por \emph{websocket}.
+O campo \emph{Sec-WebSocket-Key} contem um valor codificado em base 64 que é processado pelo servidor, cujo resultado do processamento é enviado para o cliente no campo \emph{Sec-WebSocket-Accept} da resposta. O servidor ao receber esta string concatena um valor constante, volta a converter para base 64 e é interpretado pelo cliente para saber se o cabeçalho da resposta equivale realmente a um cabeçalho de sucesso para \emph{websocket}.
+O campo \emph{Sec-WebSocket-Protocol} indica quais os sub protocolos é que o cliente pretende utilizar. Na figura, o cliente pretende utilizar os protocolos \emph{chat} e {superchat}. O servidor, entre todos os sub protocolos que conhece, escolhe apenas um daqueles que vem no pedido do cliente (desde que o conheça), e coloca o protocolo escolhido no campo \emph{Sec-WebSocket-Protocol} da resposta. Apesar desta verificação, ao receber a resposta do servidor o cliente vai verificar se o protocolo enviado corresponde a algum dos que ele colocou.
+
+Após o \emph{handshake} terminar, a comunicação entre o servidor e o cliente são feitas através de um \emph{websocket}. A partir deste ponto, 
+
+\section{Vantagens}
+
+Como já foi referido, \emph{websockets} permitem que se faça comunicação entre aplicações e servidores web sem se estar preso ás limitações do protocolo HTTP. Isto porque no final do \emph{handshake} os intervenientes da ligação comunicam diretamente sobre o canal TCP aberto, e é nisto em que consistem os \emph{websockets}. 
+
+Os \emph{websockets} têm o conceito de mensagens. Nativamente, o protocolo TCP funciona com \emph{streams} de \emph{bytes}. A implementação de \emph{websockets} permite trabalhar num nível acima de \emph{streams}, para abstrair o cliente da necessidade de cuidar da transferência de dados.
+Fazendo um paralelo com \emph{sockets}: Numa aplicação que utilize \emph{sockets}, uma chamada ao método \emph{recv} iria retornar um conjunto de bytes que podem pertencer a mais que uma mensagem. Com \emph{websockets} temos a garantia de que uma chamada a \emph{recv} retorna não só os bytes de apenas uma mensagem, como retorna todos os bytes da mensagem.
+
+%BIBLIOGRAFIA%
+
+\clearpage
+
+\begin{thebibliography}{9}
+	\bibitem{rfc6455}
+		I. Fette, A. Melnikov (December 2011)
+		\emph{The WebSocket Protocol PROPOSED STANDARD}
+				
+		http://tools.ietf.org/html/rfc6455
+
+
+\end{thebibliography}
+
+\end{document}
