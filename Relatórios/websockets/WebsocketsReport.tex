@@ -142,28 +142,42 @@ A compatibilidade entre diferentes plataformas é garantida pela utilização de
 
 Contudo, devido à necessidade de páginas mais interativas, a criação de páginas web, tomou a tendência de conter componentes \emph{JavaScript}. Inicialmente com o intuito de interagir com o \emph{DOM} atravéz de eventos, mas cada vez indo mais longe, até ao ponto de conter grande parte da lógica necessária. O que tornou esta evolução possível foi o aparecimento de \emph{XMLHttpRequest} \footnote{\url{http://www.w3.org/TR/XMLHttpRequest/}}, que trouxe um grande aumento de perfomance, já que permitia obter apenas o conteudo de interesse da componente servidora, sem trazer uma paginá correspondente na integra.
 
-As \emph{WebSockets} surgem como um novo passo nesta procura de aumento de perfomance, que tal como o nome subentende, tenta trazer a utilização básica de sockets (tal como \emph{HTTP}, funcionando sobre \emph{TCP}) para a interação entre \emph{web-browsers} e \emph{web-servers}.
+As \emph{WebSockets} surgem como um novo passo nesta procura de aumento de perfomance, que tal como o nome subentende, tenta trazer a utilização básica de sockets (tal como \emph{HTTP}, funcionando sobre \emph{TCP}) para a interação entre \emph{web-browsers} e \emph{web-servers}. Uma \emph{WebSocket} pode também ser iniciada em modo seguro, sendos ambos protocolos conheciddos como "\emph{ws}"(\emph{WebSocket}) e "\emph{wss}" (\emph{WebSocket Secure}).
+
+Durante este documento, serão feitas diversas comparações com o protocolo \emph{HTTP}, já que é sobre este, que \emph{WebSockets} surge como alternativa.
 
 \section{Visão global}
 
-Antes da adoção dos \emph{websockets}, os pedidos web eram feitos puramente através do protocolo HTTP. Cada pedido estava sujeito às limitações deste protocolo, como por exemplo, cada pedido tinha que conter o cabeçalho HTTP correspondente, e cada pedido estava afeto a apenas uma conexão.
+O protocolo \emph{WebSockets}, tal como o protocolo \emph{HTTP}, pertence à camada de aplicação e funciona sobre \emph{TCP}. Tem como objetivo trazer a possibilidade de trocar dados entre componentes cliente e servidor, de forma "semelhante" à comunicação entre duas aplicações (através de \emph{send} e \emph{recv}, ou abstrações que recorrem a estes mecanismos). Com comunicação semelhante, referimo-nos à ausencia de todos os \emph{headers/identificadores} que estão presentes durante cada pedido \emph{HTTP}, passando práticamente (já que continua a ser necessário dados para identificar os diversos pacotes) a enviar apenas o que estamos habituados a ver no corpo de pedido/resposta \emph{HTTP}.
 
-Nas aplicações simples, isto não é problemático. Caso fizessem poucos pedidos, era criadas poucas ligações, e se pedissem muitos dados de uma só vez o "`\emph{overhead}"' do cabeçalho era negligenciável. Contudo, em aplicações mais complexas que precisem de dados não estáticos, ou gerados em tempo real isto é um problema que pode arrastar a performance do sistema todo.
+De forma a facilitar a percepção das vantagens que surgem do uso de \emph{WebSockets}, iremos mostrar como o protocolo \emph{HTTP} lida com a  concorrência de pedidos e a recolha constante de nova informação da componente servidor. Tenhamos em conta, que tal como foi referido previamente, além da fase de iniciação, não existe necessidade da passagem de todos os \emph{headers} (que pode ser uma dimensao relevante se o tamanho da mensagem a enviar for pequeno).
 
-Os pedidos de informação não estática são geralmente feitos das seguintes formas:
+\subsection{Antes de \emph{WebSockets}}
+
+O protocolo \emph{HTTP} tem como base a ideia de par pedido - resposta (sejam estes enviados na integra ou em diversos fragmentos) que necessita sempre que o cliente inicie esta "conversa". Mesmo tirando proveito da persistência de conexões, um segundo pedido teria de esperar que o primeiro acabasse. Implicando que em relação a concorrência, o protocolo \emph{HTTP} necessita de uma conexão nova para cada pedido concorrente, o que torna importante não esquecer o facto dos \emph{browsers} terem os seus próprios limites de conexões concorrentes para cada \emph{host}.
+
+Em relação a obter informação da componente servidora no protocolo \emph{HTTP}, serão agora enumeradas as diferentes estratégias,  juntamente com os problemas existentes em cada:
+
 \begin{enumerate}
-	\item{\emph{Polling}:} Consiste em efetuar periodicamente pedidos a questionar o servidor se existem novos dados a obter. Isto trás um custo elevado, pois ao serem feitos constantemente pedidos é necessário estar a criar novas conexões constantemente, e podem haver bastantes pedidos a que o servidor não tenha informação para enviar. Isto adicionado ao facto de que é necessário incluir os cabeçalhos HTTP causa um constrangimento enorme à rede.
-	\item{\emph{Long-Polling:}} Semelhante ao \emph{polling}, mas o servidor prende a ligação até que haja informação a enviar. Assim que haja informação a enviar, o servidor envia-a e, seguindo o protocolo HTTP, fecha a ligação. É mais vantajoso que o \emph{polling}, pois os recursos só são libertados assim que não forem necessários, apesar de ter de ser necessário criar novas ligações para novos pedidos.
-	\item{\emph{Pushing:}}  É feito um pedido de dados ao servidor. O servidor mantém a ligação aberta e vai enviando dados ao cliente assim que houverem novos dados. É mais vantajoso face a \emph{Long-Polling} na medida que o cliente recebe novos dados sem ter de iniciar uma nova ligação, no entanto, pedidos seguintes têm que iniciar uma nova ligação.
+	\item{\emph{Polling}:} Consiste em efetuar periodicamente pedidos a questionar o servidor se existem novos dados a obter. Isto trás um custo elevado, pois ao serem feitos constantemente pedidos pode ser necessário estar a criar novas conexões (por não haver nenhuma disponivel, por a anterior estar ocupada... ou por ter sido fechada). Muitos destes pedidos provavelmente poderão obter resposta que diz não haver informação nova.
+
+	\item{\emph{Long-Polling:}} Semelhante ao \emph{polling}, mas o servidor prende a ligação até que haja informação a enviar. Assim que haja informação a enviar, o servidor responde com os dados de interesse. É mais vantajoso que o \emph{polling}, já que não se faz pedidos desnecessários (a não ser que haja algum mecanismo de timeout que liberte o pedido antes de haver dados). Tal como polling, implica que novos pedidos sejam feitos para cada obter novos dados.
+		
+	\item{\emph{Pushing:}}  É feito um pedido de dados ao servidor. O servidor mantém a ligação aberta e vai enviando dados para o cliente sem nunca fechar a ligação (tira partido de ser possivel ler partes da resposta no \emph{XMLHttpRequest}). É mais vantajoso face a \emph{Long-Polling} na medida que o cliente recebe novos dados sem ter de iniciar uma nova ligação. No entanto, pedidos para intuitos diferentes terão de ter a sua própria conexão.
 \end{enumerate}
 
-Estes métodos de pedidos são desvantajosos para o enorme volume de dados a que as aplicações complexas estão sujeitas, ainda para mais com o constante crescimento de tráfego da internet\footnote{Fonte: \url{http://en.wikipedia.org/wiki/Global_Internet_usage}}, o que faz com que seja desejável que as aplicações sejam o mais eficiente possível.
+\subsection{Após \emph{WebSocket}}
 
-O que os \emph{websockets} trazem é uma nova forma de fazer pedidos, reaproveitando a ligação do pedido original. Isto permite fazer vários pedidos sem o custo adicional acrescido dos cabeçalhos HTTP nem da criação de novas ligações.
+Os problemas referidos previamente são algo que não surge com o uso de \emph{WebSockets}, já que ao manter uma ligação persistente sem grandes restrições em termos de pedidos-respostas (pode-se enviar e receber o que for necessário), não acontece os problemas de concorrência impostos pelos \emph{browsers}. Esta liberdade de enviar/receber por iniciativa de ambos cliente e servidor, evita a necessidade das estratégias mencionadas em cima para o servidor enviar o que for necessário. 
+
+Naturalmente, existem cuidados, e possivelmente algum \emph{overhead} que é necessário adicionar intencionalmente, de forma a possibilitar o uso desta tecnologia. Estas condicionantes irão ser expostas mais à frente, no local 
+apropriado.
 
 \section{Funcionamento}
 
-Para utilizar \emph{websockets} é necessário fazer um pedido inicial através de HTTP. A informação contida no cabeçalho indicará ao servidor que se pretende fazer a comunicação através de \emph{websockets}. O servidor depois responde com sucesso ou insucesso, dependendo se suporta ou não o protocolo.
+Para iniciar uma \emph{WebSocket}, é necessário executar uma "fase de negociação" (conhecida como \emph{handshake}). Esta será feita sobre \emph{HTTP}, acontecendo depois do \emph{handshake} do \emph{TLS} e autenticação caso sejam necessárias.
+
+Para passar uma coneção normal para \emph{WebSocket}(necessário notar que a conexão usada para este \emph{handshake} será a mesma que vai user usada para servir de \emph{WebSocket}) é necessário fazer um pedido inicial através de HTTP, cujo cabeçalho indicará ao servidor que se pretende fazer a comunicação através de \emph{websockets}. O servidor depois responde com sucesso ou insucesso, dependendo se suporta ou não o protocolo.
 
 \begin{figure}
 	\begin{framed}
