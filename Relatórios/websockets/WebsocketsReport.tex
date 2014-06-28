@@ -141,17 +141,17 @@ do que está a acontecer dentro dos computadores. Isto faz com que se tenha algu
 
 A compatibilidade entre diferentes plataformas é garantida pela utilização de protocolos que faz com que cada plataforma saiba comunicar entre si. Um exemplo desses protocolos é o protocolo HTTP\footnote{A sigla HTTP vem de \emph{HyperText Transfer Protocol}, que significa Protocolo de Transmissão de Hipertexto.}, que surgiu como necessidade de transferir conteúdo estático (páginas de hipertexto). Desde a sua implementação, o protocolo foi beneficiando de revisões que expandiram o seu uso original.
 
-Contudo, devido à necessidade de páginas mais interativas, a criação de páginas web, tomou a tendência de conter componentes \emph{JavaScript}. Inicialmente com o intuito de interagir com o \emph{DOM} atravéz de eventos, mas cada vez indo mais longe, até ao ponto de conter grande parte da lógica necessária. O que tornou esta evolução possível foi o aparecimento de \emph{XMLHttpRequest} \footnote{\url{http://www.w3.org/TR/XMLHttpRequest/}}, que trouxe um grande aumento de perfomance, já que permitia obter apenas o conteudo de interesse da componente servidora, sem trazer uma paginá correspondente na integra.
+Contudo, devido à necessidade de páginas mais interativas, a criação de páginas web, houve a tendência de conter componentes \emph{JavaScript}. Inicialmente com o intuito de interagir com o \emph{DOM} através de eventos, mas cada vez indo mais longe, até ao ponto de conter grande parte da lógica necessária. O que tornou esta evolução possível foi o aparecimento de \emph{XMLHttpRequest} \footnote{\url{http://www.w3.org/TR/XMLHttpRequest/}}, que trouxe um grande aumento no desempenho, já que permitia obter apenas o conteúdo de interesse da componente servidora sem trazer uma pagina correspondente na integra.
 
-As \emph{WebSockets} surgem como um novo passo nesta procura de aumento de perfomance, que tal como o nome subentende, tenta trazer a utilização básica de sockets (tal como \emph{HTTP}, funcionando sobre \emph{TCP}) para a interação entre \emph{web-browsers} e \emph{web-servers}. Uma \emph{WebSocket} pode também ser iniciada em modo seguro, sendos ambos protocolos conheciddos como "\emph{ws}"(\emph{WebSocket}) e "\emph{wss}" (\emph{WebSocket Secure}).
+As \emph{WebSockets} surgem como um novo passo nesta procura de aumento de desempenho, que tal como o nome subentende, tenta trazer a utilização básica de sockets (tal como \emph{HTTP}, funcionando sobre \emph{TCP}) para a interação entre \emph{web-apps} e \emph{web-servers}. Um \emph{WebSocket} pode também ser iniciado em modo seguro, sendo ambos protocolos conhecidos como "\emph{ws}"(\emph{WebSocket}) e "\emph{wss}" (\emph{WebSocket Secure}).
 
-Durante este documento, serão feitas diversas comparações com o protocolo \emph{HTTP}, já que é sobre este, que \emph{WebSockets} surge como alternativa.
+Ao longo este documento, serão feitas diversas comparações com o protocolo \emph{HTTP}, já que é sobre este, que \emph{WebSockets} surge como alternativa.
 
 \section{Visão global}
 
-O protocolo \emph{WebSockets}, tal como o protocolo \emph{HTTP}, pertence à camada de aplicação e funciona sobre \emph{TCP}. Tem como objetivo trazer a possibilidade de trocar dados entre componentes cliente e servidor, de forma "semelhante" à comunicação entre duas aplicações (através de \emph{send} e \emph{recv}, ou abstrações que recorrem a estes mecanismos). Com comunicação semelhante, referimo-nos à ausencia de todos os \emph{headers/identificadores} que estão presentes durante cada pedido \emph{HTTP}, passando práticamente (já que continua a ser necessário dados para identificar os diversos pacotes) a enviar apenas o que estamos habituados a ver no corpo de pedido/resposta \emph{HTTP}.
+O protocolo \emph{WebSockets}, tal como o protocolo \emph{HTTP}, pertence à camada de aplicação e funciona sobre \emph{TCP}. Tem como objetivo trazer a possibilidade de trocar dados entre componentes cliente e servidor, de forma "semelhante" à comunicação entre duas aplicações (através de \emph{send} e \emph{recv}, ou abstrações que recorrem a estes mecanismos). Com comunicação semelhante, referimo-nos à ausência de todos os \emph{headers/identificadores} que estão presentes durante cada pedido \emph{HTTP}, passando praticamente (já que continua a ser necessário dados para identificar os diversos pacotes) a enviar apenas o que estamos habituados a ver no corpo de pedido/resposta \emph{HTTP}.
 
-De forma a facilitar a percepção das vantagens que surgem do uso de \emph{WebSockets}, iremos mostrar como o protocolo \emph{HTTP} lida com a  concorrência de pedidos e a recolha constante de nova informação da componente servidor. Tenhamos em conta, que tal como foi referido previamente, além da fase de iniciação, não existe necessidade da passagem de todos os \emph{headers} (que pode ser uma dimensao relevante se o tamanho da mensagem a enviar for pequeno).
+De forma a facilitar a perceção das vantagens que surgem do uso de \emph{WebSockets}, iremos mostrar como o protocolo \emph{HTTP} lida com a  concorrência de pedidos e a recolha constante de nova informação da componente servidor. Tenhamos em conta, que tal como foi referido previamente, além da fase de iniciação, não existe necessidade da passagem de todos os \emph{headers} (que pode ser uma dimensão relevante se o tamanho da mensagem a enviar for pequeno).
 
 \subsection{Antes de \emph{WebSockets}}
 
@@ -160,27 +160,26 @@ O protocolo \emph{HTTP} tem como base a ideia de par pedido//resposta (sejam est
 Em relação a obter informação da componente servidora no protocolo \emph{HTTP}, serão agora enumeradas as diferentes estratégias,  juntamente com os problemas existentes em cada:
 
 \begin{enumerate}
-	\item{\emph{Polling}:} Consiste em efetuar periodicamente pedidos a questionar o servidor se existem novos dados a obter. Isto trás um custo elevado, pois ao serem feitos constantemente pedidos pode ser necessário estar a criar novas conexões (por não haver nenhuma disponivel, por a anterior estar ocupada... ou por ter sido fechada). Muitos destes pedidos provavelmente poderão obter resposta que diz não haver informação nova.
+	\item{\emph{Polling}:} Consiste em efetuar periodicamente pedidos a questionar o servidor se existem novos dados a obter. Isto trás um custo elevado, pois ao serem feitos constantemente pedidos pode ser necessário estar a criar novas conexões (por não haver nenhuma disponível, por a anterior estar ocupada... ou por ter sido fechada). Muitos destes pedidos provavelmente poderão obter resposta que diz não haver informação nova.
 
-	\item{\emph{Long-Polling:}} Semelhante ao \emph{polling}, mas o servidor prende a ligação até que haja informação a enviar. Assim que haja informação a enviar, o servidor responde com os dados de interesse. É mais vantajoso que o \emph{polling}, já que não se faz pedidos desnecessários (a não ser que haja algum mecanismo de timeout que liberte o pedido antes de haver dados). Tal como polling, implica que novos pedidos sejam feitos para cada obter novos dados.
+	\item{\emph{Long-Polling:}} Semelhante ao \emph{polling}, mas o servidor prende a ligação até que haja informação a enviar. Assim que haja informação a enviar, o servidor responde com os dados de interesse. É mais vantajoso que o \emph{polling}, já que não se faz pedidos desnecessários (a não ser que haja algum mecanismo de \emph{timeout} que liberte o pedido antes de haver dados). Tal como \emph{polling}, implica que novos pedidos sejam feitos para cada obter novos dados.
 		
-	\item{\emph{Pushing:}}  É feito um pedido de dados ao servidor. O servidor mantém a ligação aberta e vai enviando dados para o cliente sem nunca fechar a ligação (tira partido de ser possivel ler partes da resposta no \emph{XMLHttpRequest}). É mais vantajoso face a \emph{Long-Polling} na medida que o cliente recebe novos dados sem ter de iniciar uma nova ligação. No entanto, pedidos para intuitos diferentes terão de ter a sua própria conexão.
+	\item{\emph{Pushing:}}  É feito um pedido de dados ao servidor. O servidor mantém a ligação aberta e vai enviando dados para o cliente sem nunca fechar a ligação (tira partido de ser possível ler partes da resposta no \emph{XMLHttpRequest}). É mais vantajoso face a \emph{Long-Polling} na medida que o cliente recebe novos dados sem ter de iniciar uma nova ligação. No entanto, pedidos para intuitos diferentes terão de ter a sua própria conexão.
 \end{enumerate}
 
 \subsection{Após \emph{WebSocket}}
 
-Os problemas referidos previamente são algo que não surge com o uso de \emph{WebSockets}, já que ao manter uma ligação persistente sem grandes restrições em termos de pedidos-respostas (pode-se enviar e receber o que for necessário), não acontece os problemas de concorrência impostos pelos \emph{browsers}. Esta liberdade de enviar/receber por iniciativa de ambos cliente e servidor, evita a necessidade das estratégias mencionadas em cima para o servidor enviar o que for necessário. 
+Os problemas referidos previamente são algo que não surgem com o uso de \emph{WebSockets}, já que ao manter uma ligação persistente sem grandes restrições em termos de pedidos e respostas não acontecem os problemas de concorrência impostos pelos \emph{browsers} (limite de ligações activas). Esta liberdade de enviar/receber por iniciativa de ambos cliente e servidor, evita a necessidade das estratégias mencionadas em cima para o servidor enviar o que for necessário.
 
-Naturalmente, existem cuidados, e possivelmente algum \emph{overhead} que é necessário adicionar intencionalmente, de forma a possibilitar o uso desta tecnologia. Estas condicionantes irão ser expostas mais à frente, no local 
-apropriado.
+Naturalmente, existem cuidados, e possivelmente algum \emph{overhead} que é necessário adicionar intencionalmente, de forma a possibilitar o uso desta tecnologia. Estas condicionantes irão ser expostas mais à frente, no local apropriado.
 
 \section{Funcionamento}
 
-Antes de demonstrar o funcionamento das \emph{WebSockets}, à que ter em conta que o protocolo \footnote{\url{http://tools.ietf.org/html/rfc6455}} deixa muito em aberto para as implementações em si, expecificando apenas o seu estabelicimento, formato de fragmentos e parametros da "sessão". A fase de estabelcimento é conhecida como \emph{handshake}, sendo feita sobre \emph{HTTP}, acontecendo depois do \emph{handshake} do \emph{TLS} e autenticação caso sejam necessárias.
+Antes de demonstrar o funcionamento das \emph{WebSockets}, há que ter em conta que o protocolo \footnote{\url{http://tools.ietf.org/html/rfc6455}} deixa muito em aberto para as implementações em si, especificando apenas o seu estabelecimento, formato de fragmentos e parâmetros da "sessão". A fase de estabelecimento é conhecida como \emph{handshake}, sendo feita sobre \emph{HTTP}, acontecendo depois do \emph{handshake} do \emph{TLS} e autenticação caso sejam necessárias.
 
 \subsection{\emph{handshake}}
 
-Para passar uma coneção normal para \emph{WebSocket}(necessário notar que a conexão usada para este \emph{handshake} será a mesma que vai user usada para servir de \emph{WebSocket}) é necessário fazer um pedido inicial através de HTTP, cujo cabeçalho indicará ao servidor que se pretende fazer a comunicação através de \emph{websockets}. O servidor depois responde com sucesso ou insucesso, dependendo se suporta ou não o protocolo.
+Para passar uma conexão normal para \emph{WebSocket} é necessário fazer um pedido inicial através de HTTP, cujo cabeçalho indicará ao servidor que se pretende fazer a comunicação através de \emph{websockets}. O servidor depois responde com sucesso ou insucesso, dependendo se suporta ou não o protocolo. É de notar que a conexão usada para este \emph{handshake} será a mesma que vai ser usada para servir de \emph{WebSocket}. 
 
 \begin{figure}[H]
 	\begin{framed}
@@ -217,41 +216,41 @@ Nas figuras ~\ref{fig:httpHeaderReq} e ~\ref{fig:httpHeaderRspS} podemos ver um 
 
 O campo \emph{Sec-WebSocket-Key} contem um valor codificado em base 64 que é processado pelo servidor, cujo resultado do processamento é enviado para o cliente no campo \emph{Sec-WebSocket-Accept} da resposta. O servidor ao receber esta string concatena um valor constante, volta a converter para base 64 e é interpretado pelo cliente para saber se o cabeçalho da resposta equivale realmente a um cabeçalho de sucesso para \emph{websocket}.
 
-Ambos campos \emph{Sec-WebSocket-Protocol} e \emph{Sec-WebSocket-Extensions} são parametros negociaveis, tendo o cliente de expecificar quais os sub-protocolos e extensões pretende utilizar. Na figura, o cliente pretende utilizar os protocolos \emph{chat} e \emph{superchat} e extensão \emph{permessage-deflate}. O servidor, entre todos os sub protocolos que conhece, escolhe apenas um daqueles que vem no pedido do cliente (desde que o conheça), e coloca o protocolo escolhido no campo \emph{Sec-WebSocket-Protocol} da resposta, enquanto em relação às extensões, responde no campo \emph{Sec-WebSocket-Extensions} com as extensões que suporta. Continua a ser necessário que o cliente verifique se o protocolo enviado corresponde a algum dos que ele colocou.
+Ambos os campos \emph{Sec-WebSocket-Protocol} e \emph{Sec-WebSocket-Extensions} são parametros negociáveis, tendo o cliente de especificar quais os sub-protocolos e extensões pretende utilizar. Na figura, o cliente pretende utilizar os protocolos \emph{chat} e \emph{superchat} e extensão \emph{permessage-deflate}. O servidor, entre todos os sub protocolos que conhece, escolhe apenas um daqueles que vem no pedido do cliente (desde que o conheça), e coloca o protocolo escolhido no campo \emph{Sec-WebSocket-Protocol} da resposta, enquanto em relação às extensões, responde no campo \emph{Sec-WebSocket-Extensions} com as extensões que suporta. Continua a ser necessário que o cliente verifique se o protocolo enviado corresponde a algum dos que ele colocou.
 
-Após o \emph{handshake} terminar, a \emph{WebSocket} foi estará estabelicida e o envio de mensagens poderá começar.
+Após o \emph{handshake} terminar, o \emph{WebSocket} estará estabelicido e o envio de mensagens poderá começar.
 
 \subsection{Formato de mensagens/fragmentos}
 
-Um conceito importante, e que por extensão, deve estar presente quando se transfere dados em ambas direções, é que o recetor só tem acesso aos dados quando estes são recebidos na totalidade (os dados na totalidade são chamados de mensagens), sendo este um dos principais factores que leva a grande parte das implementações de \emph{WebSockets} serem \emph{event-based}. 
+Um conceito importante, e que por extensão deve estar presente quando se transferem dados em ambas direções, é que o recetor só tem acesso aos dados quando estes são recebidos na totalidade (os dados na totalidade são chamados de mensagens), sendo este um dos principais fatores que leva a grande parte das implementações de \emph{WebSockets} serem \emph{event-based}. 
 
-Estas mensagens durante transporte estão divididas em \emph{frames} (numero ilimitado), que podem também ser fragmentadas (estes fragmentos podem mudar durante os diversos intermediarios presentes na transerência). Cada frame tem a noção se correspondende à conclusão da mensagem, mas nunca de quantas frames ainda estão em falta, sendo esta a razão porque o receptor só pode ler a mensagem quando o ultimo \emph{frame} é recebido (no protocolo \emph{HTTP}, esta conclusão podia ser tirada a partir do cabeçalho \emph{Content-length}). 
+Estas mensagens durante transporte estão divididas em \emph{frames} (numero ilimitado), que podem também ser fragmentadas (estes fragmentos podem mudar durante os diversos intermediários presentes na transferência). Cada \emph{frame} tem a noção se corresponde à conclusão da mensagem, mas nunca de quantas \emph{frames} ainda estão em falta, sendo esta a razão porque o recetor só pode ler a mensagem quando a ultimo \emph{frame} é recebido. No protocolo \emph{HTTP}, esta conclusão podia ser tirada a partir do cabeçalho \emph{Content-length}. 
 
 \subsection{Sub-protocolos e extensões}
 
-Devido à simplicidade das mensagens, o protocolo conta que os utilizadores definam um formato para as mensagens, já que apesar de situacional, ao tirar proveito da existência de uma conexão para diversos propositos, é necessário encontrar um "substituto" para o par pedido//resposta do protocolo \emph{HTTP} (novamente, nada impede que exista diversas respostas para o mesmo pedido). 
+Devido à simplicidade das mensagens, o protocolo conta que os utilizadores definam um formato para as mensagens, já que ao tirar proveito da existência de uma conexão para diversos propósitos, é necessário encontrar um "substituto" para o par pedido//resposta do protocolo \emph{HTTP} (novamente, nada impede que existam diversas respostas para o mesmo pedido). 
 
 Como exemplo, temos \emph{JSON-RPC 2.0}\footnote{\url{http://www.jsonrpc.org/specification}} e \emph{WAMP}\footnote{\url{http://wamp.ws/}}, que usam \emph{JSON} como formato das mensagens e identificadores para relacionar os diversos pedidos e respetivas respostas.
 
 \medskip
 
-Em relação a extensões, podemos as considerar como formas de expandir o protocolo já existente, ao dicionar compressão (extensão \emph{permessage-deflate\footnote{\url{http://tools.ietf.org/html/draft-ietf-hybi-permessage-compression-00}}} ou ao adicionar multiplos canais numa unica conexão (extensão \emph{Websocket-multiplexing\footnote{\url{http://tools.ietf.org/html/draft-ietf-hybi-websocket-multiplexing-11}}}). 
+Em relação a extensões, podemos as considerar como formas de expandir o protocolo já existente, ao adicionar compressão (extensão \emph{permessage-deflate\footnote{\url{http://tools.ietf.org/html/draft-ietf-hybi-permessage-compression-00}}} ou ao adicionar múltiplos canais numa única conexão (extensão \emph{Websocket-multiplexing\footnote{\url{http://tools.ietf.org/html/draft-ietf-hybi-websocket-multiplexing-11}}}). 
 
-\section{Possiveis problemas}
+\section{Possíveis problemas}
 
-As \emph{Websockets} como vimos, trazem um conjunto de facilidades/melhorias, mas como é de esperar, traz também um conjunto de problemas cujos utilizadores terão de ter em conta quando desemvolvem as suas aplicações.
+Os \emph{Websockets} como vimos, trazem um conjunto de facilidades/melhorias, mas como é de esperar, traz também um conjunto de problemas cujos utilizadores terão de ter em conta quando desenvolvem as suas aplicações.
 
-Devido à restrição de ser obrgiado a obter os dados na sua totalidade (mensagens completas), à que ter o cuidado com o tamanho dos mesmos, devido ao \emph{buffering} necessário, e problemas de memó ria que podem emergir.
+Devido à restrição de ser obrigado a obter os dados na sua totalidade (mensagens completas), há que ter o cuidado com o tamanho dos mesmos, devido ao \emph{buffering} necessário, e problemas de memória que podem emergir.
 
 \subsection{Interação com terceiros} 
 
-À procura de melhorias de perfomance, na \emph{internet} estão presentes mecanismos que até agora apenas tinham em conta o protocolo \emph{HTTP}, como proxys (permitem filtrar conteudo, facilitar \emph{caching}, etc), load balancers que são imporantes no ambito de sistemas distribuídos (redireccionam os pedidos para quem está disponível para os executar) ou \emph{firewalls}.
+À procura de melhorias de desempenho, na \emph{internet} estão presentes mecanismos que até agora apenas tinham em conta o protocolo \emph{HTTP}, como \emph{proxies} (que permitem filtrar conteúdo, facilitar \emph{caching}, etc), \emph{load balancers} que são importantes no âmbito de sistemas distribuídos (redirecionam os pedidos para quem está disponível para os executar) ou \emph{firewalls}.
 
-Tendo em conta que a única componente semelhante a \emph{HTTP} é o \emph{handshake}, é necessário ter em conta se estes mecanismos irão continuar a funcionar como suposto com \emph{WebSockets} (alterar os mesmos pode não ser simples/possível). Em relação a \emph{firewalls}, não há nenhum impedimento já que se continua a usar a porta 80 e 443, apesar do mesmo não se poder dizer de \emph{proxy's} e \emph{load balancer's}.
+Tendo em conta que a única componente semelhante a \emph{HTTP} é o \emph{handshake}, é necessário ter em conta se estes mecanismos irão continuar a funcionar como suposto com \emph{WebSockets} (alterar os mesmos pode não ser simples/possível). Em relação a \emph{firewalls}, não há nenhum impedimento já que se continua a usar a porta 80 e 443, apesar do mesmo não se poder dizer de \emph{proxies} e \emph{load balancers}.
 
-No caso dos \emph{proxy's}, dependendo da configuração, alguns dos cabeçalhos podem ser removidos, o que é problemático caso o cabeçalho \emph{upgrade} durante o \emph{handshake} não seja propagado (resultando em falha). Novamente dependendo da configuração, os \emph{proxy's} podem não propagar o pedido se o conteudo não for \emph{HTTP}, este problema pode ser evitado usando \emph{WebSocket-secure}, já que os \emph{proxy's} por norma propagam dados que estejam encriptados. 
+No caso dos \emph{proxies}, dependendo da configuração, alguns dos cabeçalhos podem ser removidos, o que é problemático caso o cabeçalho \emph{upgrade} durante o \emph{handshake} não seja propagado (resultando em falha). Novamente dependendo da configuração, os \emph{proxy's} podem não propagar o pedido se o conteúdo não for \emph{HTTP}, este problema pode ser evitado usando \emph{WebSocket-secure}, já que os \emph{proxies} por norma propagam dados que estejam encriptados. 
 
-Em relação a \emph{load balancers}, dependendo da camada onde estes actuam, podem surgir problemas. No caso de actuarem sobre a camada de transporte, continuaram a actuar correctamente. Caso actuassem sobre a camada de aplicação, modificações serão necessárias, já que é necessário assegurar que a mensagem será redirecionada sempre para o mesmo recetor.
+Em relação a \emph{load balancers}, dependendo da camada onde estes actuam, podem surgir problemas. No caso de atuarem sobre a camada de transporte, continuarão a atuar corretamente. Caso atuassem sobre a camada de aplicação, modificações serão necessárias, já que é necessário assegurar que a mensagem será redirecionada sempre para o mesmo recetor.
 
 \end{document}
 
