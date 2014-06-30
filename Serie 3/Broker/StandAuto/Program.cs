@@ -47,6 +47,7 @@ namespace StandAuto
             Type servType = typeof(StandAuto.Stand);
             svchost = new ServiceHost(servType);
             WSHttpBinding bind = new WSHttpBinding();
+            bind.Security.Mode = SecurityMode.Message;
 
             ServiceMetadataBehavior smb = svchost.Description.Behaviors.Find<ServiceMetadataBehavior>();
             if (smb != null)

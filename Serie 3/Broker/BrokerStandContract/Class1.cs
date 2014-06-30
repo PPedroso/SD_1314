@@ -11,7 +11,6 @@ namespace BrokerStandContract
     [ServiceContract(Namespace = "http://ISEL.BROKER.STAND")]
     public interface IBrokerStandService
     {
-
         [OperationContract]
         void registerStand(string standEndpoint);
     }

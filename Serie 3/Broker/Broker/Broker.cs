@@ -34,6 +34,7 @@ namespace BrokerInterface
         {
             EndpointAddress addr = new EndpointAddress(standEndpoint);
             WSHttpBinding bind = new WSHttpBinding();
+            bind.Security.Mode = SecurityMode.Message;
 
             IChannelFactory<IStand> cfact = new ChannelFactory<IStand>(bind);
             IStand proxy = cfact.CreateChannel(addr);
@@ -62,7 +63,6 @@ namespace BrokerInterface
                 Console.WriteLine(String.Format("Broadcasting {0}", p.ToString()));
                 p.submitQuery(query);
             }
-                
         }
 
 
@@ -94,7 +94,7 @@ namespace BrokerInterface
             }
 
             svchost.AddServiceEndpoint(typeof(IBrokerClientService), bind, addrClient);
-            svchost.AddServiceEndpoint(typeof(IBrokerStandService), WSbind, addrStand);
+            //svchost.AddServiceEndpoint(typeof(IBrokerStandService), WSbind, addrStand);
             svchost.Open();
             Console.WriteLine("Broker service started, press any key to shut down");
             Console.ReadLine();
