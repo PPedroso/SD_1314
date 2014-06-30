@@ -17,14 +17,23 @@ namespace BrokerInterface
     {
         Broker broker = new Broker();
 
-
         public string helloWorld(string name) {
             return "Hello World " + name;
         }
 
-        public void submitQueryByBrand(string uri,string brand) {
-            Console.WriteLine(String.Format("{0} querying brand: {1}", uri, brand));
-            broker.broadcastQuery(uri + " " + brand);
+        public void submitQueryByBrand(string client, string brand) {
+            Console.WriteLine(String.Format("{0} querying brand: {1}", client, brand));
+            broker.broadcastBrandQuery(client, brand);
+        }
+
+        public void submitQueryByMinumumYearRegistration(string client, int yearRegistration) {
+            Console.WriteLine(String.Format("{0} querying year registration: {1}", client, yearRegistration));
+            broker.broadcastYearQuery(client, yearRegistration);
+        }
+
+        public void submitQueryByMaxPrice(string client, int maxPrice) {
+            Console.WriteLine(String.Format("{0} querying brand: {1}", client, maxPrice));
+            broker.broadcastPriceQuery(client, maxPrice);
         }
     }
 
@@ -43,9 +52,6 @@ namespace BrokerInterface
         }
     }
 
-
-
-    
     public class Broker
     {
         private LinkedList<IStand> stands = new LinkedList<IStand>();
@@ -58,17 +64,20 @@ namespace BrokerInterface
             stands.AddLast(proxy);
         }
 
-        public void broadcastQuery(string query) {
-            foreach (IStand p in stands) {
-                Console.WriteLine(String.Format("Broadcasting {0}", p.ToString()));
-                p.submitQuery(query);
-            }
+        public void broadcastBrandQuery(string client, string brand) { 
+            stands.ForEach(stand => stand.queryByBrand(client, brand)); 
         }
 
+        public void broadcastYearQuery(string client, int year) {
+            stands.ForEach(stand => stand.queryByMinimumYearRegistration(client, year)); 
+        }
+
+        public void broadcastPriceQuery(string client, int price) {
+            stands.ForEach(stand => stand.queryByMaxPrice(client, price)); 
+        }
 
         static void Main(string[] args)
         {
-
             Uri addrClient = new Uri(BROKER_CLIENT_ENDPOINT);
             Uri addrStand = new Uri(BROKER_STAND_ENDPOINT);
 
@@ -102,6 +111,13 @@ namespace BrokerInterface
             Console.WriteLine("Broker service closing");
             Console.ReadLine();
 
+        }
+
+    }
+
+    public static class MyExtensions {
+        public static void ForEach<T>(this IEnumerable<T> @this, Action<T> action) {
+            foreach (var x in @this) { action(x); }
         }
     }
 }

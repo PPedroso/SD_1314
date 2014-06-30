@@ -10,12 +10,12 @@ namespace StandContract
     public interface IStand
     {
         [OperationContract]
-        void queryByBrand(String brand);
+        void queryByBrand(string client, String brand);
 
         [OperationContract]
-        void queryByMaxPrice(int maxPrice);
+        void queryByMaxPrice(string client, int maxPrice);
 
         [OperationContract]
-        void queryByMinimumYearRegistration(int minYearRegistration);
+        void queryByMinimumYearRegistration(string client, int minYearRegistration);
     }
 }

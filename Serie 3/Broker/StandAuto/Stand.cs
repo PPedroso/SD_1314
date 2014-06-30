@@ -15,15 +15,15 @@ namespace StandAuto
     {
         CarsSingleton carsSingleton = CarsSingleton.getInstance();
 
-        public void queryByBrand(String brand) {
+        public void queryByBrand(string client, String brand) {
             IEnumerable<Car> result = carsSingleton.getCarsWithBrand(brand);
         }
 
-        public void queryByMaxPrice(int maxPrice) {
+        public void queryByMaxPrice(string client, int maxPrice) {
             IEnumerable<Car> result = carsSingleton.getCarsWithPriceLowerThen(maxPrice);
         }
 
-        public void queryByMinimumYearRegistration(int minYearRegistration) {
+        public void queryByMinimumYearRegistration(string client, int minYearRegistration) {
             IEnumerable<Car> result = carsSingleton.getCarsWithYearRegistrationHigherThen(minYearRegistration);
         }
     }

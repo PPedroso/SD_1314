@@ -14,19 +14,14 @@ namespace BrokerClientContract
 
         [OperationContract]
         string helloWorld(string name);
+        
         [OperationContract]
         void submitQueryByBrand(string client, string brand);
 
-    }
+        [OperationContract]
+        void submitQueryByMinumumYearRegistration(string client, int yearRegistration);
 
-    [DataContract]
-    public class QueryStructure
-    {
-
-        [DataMember]
-        string clientUri { get; set; }
-
-        [DataMember]
-        string query { get; set; }
+        [OperationContract]
+        void submitQueryByMaxPrice(string client, int maxPrice);
     }
 }
