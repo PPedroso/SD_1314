@@ -43,8 +43,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Car.cs" />
+    <Compile Include="CarsSingleton.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Stand.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BrokerStandContract\BrokerStandContract.csproj">

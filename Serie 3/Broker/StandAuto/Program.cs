@@ -11,15 +11,7 @@ using System.IO;
 using System.Xml.Linq;
 
 namespace StandAuto
-{
-
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall, ConcurrencyMode= ConcurrencyMode.Multiple)]
-    public class Stand : IStand {
-        public void submitQuery(string query) {
-            Console.WriteLine(String.Format("Querying stand with query: {0}", query));
-        }
-    }
-    
+{    
     class Program
     {
 
@@ -72,22 +64,12 @@ namespace StandAuto
           
         }
 
-        private static List<Car> loadCars(String port) {
-            String pathToFile = String.Format(@"..\..\{0}.xml", port);
-            XDocument docx = XDocument.Load(pathToFile);
-            return docx.Descendants("car").Select(car => 
-                new Car(Int32.Parse(car.Element("price").Value),
-                        car.Element("brand").Value,
-                        Int32.Parse(car.Element("yearRegistration").Value))
-            ).ToList<Car>();
-        }
-        
         static void Main(string[] args)
         {
             Console.WriteLine("Insert port");
             string port = Console.ReadLine();
 
-            List<Car> cars = loadCars(port);
+            CarsSingleton.getInstance().initiate(String.Format(@"..\..\{0}.xml", port));
             startService(port);
             registerStandInBroker();
 

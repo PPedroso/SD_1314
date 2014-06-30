@@ -5,7 +5,7 @@ using System.Text;
 
 namespace StandAuto
 {
-    class Car
+    public class Car
     {
         private readonly int price;
         private readonly String brand;
