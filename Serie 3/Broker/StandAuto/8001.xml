@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<cars>
+  <car>
+    <price>2000</price>
+    <brand>Opel</brand>
+    <yearRegistration>2008</yearRegistration>
+  </car>
+  <car>
+    <price>1500</price>
+    <brand>Opel</brand>
+    <yearRegistration>2006</yearRegistration>
+  </car>
+  <car>
+    <price>1000</price>
+    <brand>Opel</brand>
+    <yearRegistration>2004</yearRegistration>
+  </car>
+  <car>
+    <price>500</price>
+    <brand>Opel</brand>
+    <yearRegistration>2000</yearRegistration>
+  </car>
+</cars>
