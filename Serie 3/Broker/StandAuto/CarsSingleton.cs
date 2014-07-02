@@ -42,7 +42,15 @@ namespace StandAuto {
         public bool setReservedStatus(int carId, bool isAvailable) {
             if (mapCars[carId].tryReserve()) {
                 //in case the reservation is successefull, it's necessary to save
-                
+                var result = new XDocument(
+                                new XElement("cars",
+                                        mapCars.Select(car => new XElement("car",
+                                                                  new XElement("id", car.Value.getId()),
+                                                                  new XElement("price", car.Value.getPrice()),
+                                                                  new XElement("brand", car.Value.getBrand()),
+                                                                  new XElement("yearRegistration", car.Value.getYearRegistration()),
+                                                                  new XElement("isAvailable", car.Value.getIsAvailable())))));
+                result.Save(filePath);
                 return true;
             } else {
                 return false;
