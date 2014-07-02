@@ -55,7 +55,7 @@ namespace StandAuto
     partial class Stand : IStandClientContract {
         public void reserveCar(int id) {
             if (!carsSingleton.setReservedStatus(id, true)) {
-                throw new AlreadyReservedException("Car is already reserved");
+                throw new FaultException<AlreadyReservedFault>(new AlreadyReservedFault { Id = id });
             }
         }
     }
