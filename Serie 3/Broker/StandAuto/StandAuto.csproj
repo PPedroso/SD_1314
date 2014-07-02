@@ -71,7 +71,6 @@
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
     <Compile Include="Stand.cs" />
-    <Compile Include="StandClient.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="8001.xml" />

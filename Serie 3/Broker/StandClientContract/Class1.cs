@@ -11,6 +11,7 @@ namespace StandClientContract
     public interface IStandClientContract
     {
         [OperationContract]
+        [FaultContract(typeof(AlreadyReservedException))]
         void reserveCar(int id);
     }
 }
