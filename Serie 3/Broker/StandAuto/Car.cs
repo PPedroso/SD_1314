@@ -34,6 +34,8 @@ namespace StandAuto
 
         public bool getIsAvailable() { return isAvailable == TRUE; }
 
-        public bool tryReserve() { return Interlocked.CompareExchange(ref isAvailable, TRUE, FALSE) == FALSE; }
+        public int getRawIsAvailable() { return isAvailable; }
+
+        public bool tryReserve() { return Interlocked.CompareExchange(ref isAvailable, FALSE, TRUE) == TRUE; }
     }
 }

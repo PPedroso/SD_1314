@@ -17,7 +17,8 @@ namespace StandAuto {
         public void initiate(String filePath) {
             this.filePath = filePath;
             this.mapCars = new Dictionary<int, Car>();
-            foreach (XElement e in XDocument.Load(filePath).Descendants()) {
+            var a = XDocument.Load(filePath).Descendants();
+            foreach (XElement e in XDocument.Load(filePath).Descendants("car")) {
                 Car car = new Car(Int32.Parse(e.Element("id").Value),
                                   Int32.Parse(e.Element("price").Value),
                                   e.Element("brand").Value,
@@ -49,7 +50,7 @@ namespace StandAuto {
                                                                   new XElement("price", car.Value.getPrice()),
                                                                   new XElement("brand", car.Value.getBrand()),
                                                                   new XElement("yearRegistration", car.Value.getYearRegistration()),
-                                                                  new XElement("isAvailable", car.Value.getIsAvailable())))));
+                                                                  new XElement("isAvailable", car.Value.getRawIsAvailable())))));
                 result.Save(filePath);
                 return true;
             } else {
