@@ -1,21 +1,25 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <cars>
   <car>
+    <id>1</id>
     <price>6000</price>
     <brand>Mercedes</brand>
     <yearRegistration>2008</yearRegistration>
   </car>
   <car>
+    <id>2</id>
     <price>5000</price>
     <brand>Mercedes</brand>
     <yearRegistration>2006</yearRegistration>
   </car>
   <car>
+    <id>3</id>
     <price>4000</price>
-    <brand>Mercedes</brand>
+    <brand>Opel</brand>
     <yearRegistration>2004</yearRegistration>
   </car>
   <car>
+    <id>4</id>
     <price>2000</price>
     <brand>Mercedes</brand>
     <yearRegistration>2000</yearRegistration>

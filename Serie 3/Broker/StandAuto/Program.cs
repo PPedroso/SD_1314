@@ -7,6 +7,7 @@ using System.ServiceModel.Description;
 using System.ServiceModel.Channels;
 using BrokerStandContract;
 using StandContract;
+using StandClientContract;
 using System.IO;
 using System.Xml.Linq;
 
@@ -17,7 +18,9 @@ namespace StandAuto
 
         const string BASE_HTTP = "http://localhost:";
         const string BROKER_SERVICE_ENDPOINT = "http://localhost:8081/BrokerStandService";
-        static string STAND_SERVICE_ENDPOINT;
+        public static string STAND_BROKER_SERVICE_ENDPOINT;
+        public static string STAND_CLIENT_SERVICE_ENDPOINT;
+        
 
         static ServiceHost svchost;
 
@@ -30,35 +33,40 @@ namespace StandAuto
             IChannelFactory<IBrokerStandService> cfact = new ChannelFactory<IBrokerStandService>(bind);
             proxy = cfact.CreateChannel(addr);
 
-            proxy.registerStand(STAND_SERVICE_ENDPOINT);
+            proxy.registerStand(STAND_BROKER_SERVICE_ENDPOINT);
         }
 
-        private static void startService(string port) {
+        private static void startStandBrokerService(string port) {
 
-            STAND_SERVICE_ENDPOINT = BASE_HTTP + port + "/StandService";
+            STAND_BROKER_SERVICE_ENDPOINT = BASE_HTTP + port + "/StandBrokerService";
+            STAND_CLIENT_SERVICE_ENDPOINT = BASE_HTTP + port + "/StandClientService";
 
-            Uri addr = new Uri(STAND_SERVICE_ENDPOINT);
+            Uri wsAddr = new Uri(STAND_BROKER_SERVICE_ENDPOINT);
+            Uri httpAddr = new Uri(STAND_CLIENT_SERVICE_ENDPOINT);
             Type servType = typeof(StandAuto.Stand);
             svchost = new ServiceHost(servType);
-            WSHttpBinding bind = new WSHttpBinding();
-            bind.Security.Mode = SecurityMode.Message;
+            WSHttpBinding wsBind = new WSHttpBinding();
+            BasicHttpBinding httpBind = new BasicHttpBinding();
+            
+            wsBind.Security.Mode = SecurityMode.Message;
 
             ServiceMetadataBehavior smb = svchost.Description.Behaviors.Find<ServiceMetadataBehavior>();
             if (smb != null)
             {
                 smb.HttpGetEnabled = true;
-                smb.HttpGetUrl = addr;
+                smb.HttpGetUrl = wsAddr;
 
             }
             else
             {
                 smb = new ServiceMetadataBehavior();
                 smb.HttpGetEnabled = true;
-                smb.HttpGetUrl = addr;
+                smb.HttpGetUrl = wsAddr;
                 svchost.Description.Behaviors.Add(smb);
             }
 
-            svchost.AddServiceEndpoint(typeof(IStand), bind, addr);
+            svchost.AddServiceEndpoint(typeof(IStandBrokerContract), wsBind, wsAddr);
+            svchost.AddServiceEndpoint(typeof(StandClientContract.IStandClientContract), httpBind, httpAddr);
             svchost.Open();
 
           
@@ -70,7 +78,7 @@ namespace StandAuto
             string port = Console.ReadLine();
 
             CarsSingleton.getInstance().initiate(String.Format(@"..\..\{0}.xml", port));
-            startService(port);
+            startStandBrokerService(port);
             registerStandInBroker();
 
             Console.WriteLine("Stand registered in broker");

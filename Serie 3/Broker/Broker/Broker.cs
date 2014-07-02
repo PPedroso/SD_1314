@@ -12,7 +12,7 @@ using System.ServiceModel.Description;
 
 namespace BrokerInterface
 {
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Single)]
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple)]
     partial class BrokerServices : IBrokerClientService
     {
         Broker broker = new Broker();
@@ -22,8 +22,15 @@ namespace BrokerInterface
         }
 
         public void submitQueryByBrand(string client, string brand) {
-            Console.WriteLine(String.Format("{0} querying brand: {1}", client, brand));
-            broker.broadcastBrandQuery(client, brand);
+            try
+            {
+                Console.WriteLine(String.Format("{0} querying brand: {1}", client, brand));
+                broker.broadcastBrandQuery(client, brand);
+            }
+            catch (Exception e) {
+                Console.WriteLine("Error:" + e.Message);
+            }
+            
         }
 
         public void submitQueryByMinumumYearRegistration(string client, int yearRegistration) {
@@ -45,8 +52,8 @@ namespace BrokerInterface
             WSHttpBinding bind = new WSHttpBinding();
             bind.Security.Mode = SecurityMode.Message;
 
-            IChannelFactory<IStand> cfact = new ChannelFactory<IStand>(bind);
-            IStand proxy = cfact.CreateChannel(addr);
+            IChannelFactory<IStandBrokerContract> cfact = new ChannelFactory<IStandBrokerContract>(bind);
+            IStandBrokerContract proxy = cfact.CreateChannel(addr);
             Console.WriteLine(String.Format("{0} registered", standEndpoint));
             broker.addStand(proxy);
         }
@@ -54,12 +61,12 @@ namespace BrokerInterface
 
     public class Broker
     {
-        private LinkedList<IStand> stands = new LinkedList<IStand>();
+        private LinkedList<IStandBrokerContract> stands = new LinkedList<IStandBrokerContract>();
         
         private const string BROKER_CLIENT_ENDPOINT = "http://localhost:8080/BrokerClientService" ;
         private const string BROKER_STAND_ENDPOINT = "http://localhost:8081/BrokerStandService";
 
-        public void addStand(IStand proxy) {
+        public void addStand(IStandBrokerContract proxy) {
             Console.WriteLine(String.Format("Broker adding stand: {0}",proxy.ToString()));
             stands.AddLast(proxy);
         }
@@ -103,7 +110,7 @@ namespace BrokerInterface
             }
 
             svchost.AddServiceEndpoint(typeof(IBrokerClientService), bind, addrClient);
-            //svchost.AddServiceEndpoint(typeof(IBrokerStandService), WSbind, addrStand);
+            svchost.AddServiceEndpoint(typeof(IBrokerStandService), WSbind, addrStand);
             svchost.Open();
             Console.WriteLine("Broker service started, press any key to shut down");
             Console.ReadLine();

@@ -47,6 +47,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClientContract.cs" />
+    <Compile Include="ClientService.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -73,7 +75,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <None Include="app.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -115,6 +116,14 @@
     <ProjectReference Include="..\BrokerContract\BrokerClientContract.csproj">
       <Project>{2f35597f-6e1b-469b-b1f0-ee4d9a2b7004}</Project>
       <Name>BrokerClientContract</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\StandClientContract\StandClientContract.csproj">
+      <Project>{7374ba83-cad7-4852-9994-cdf57c255647}</Project>
+      <Name>StandClientContract</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\StandContract\StandContract.csproj">
+      <Project>{c8f9e9d2-a582-45db-ac84-cfa26b607859}</Project>
+      <Name>StandContract</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

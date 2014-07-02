@@ -10,18 +10,14 @@ namespace BrokerClientContract
 
     [ServiceContract(Namespace = "http://ISEL.BROKER.CLIENT")]
     public interface IBrokerClientService
-    {
-
-        [OperationContract]
-        string helloWorld(string name);
-        
-        [OperationContract]
+    {   
+        [OperationContract(IsOneWay = true)]
         void submitQueryByBrand(string client, string brand);
 
-        [OperationContract]
+        [OperationContract(IsOneWay = true)]
         void submitQueryByMinumumYearRegistration(string client, int yearRegistration);
 
-        [OperationContract]
+        [OperationContract(IsOneWay = true)]
         void submitQueryByMaxPrice(string client, int maxPrice);
     }
 }

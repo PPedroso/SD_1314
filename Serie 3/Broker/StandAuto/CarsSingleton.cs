@@ -16,7 +16,8 @@ namespace StandAuto
         public void initiate(String filePath) {
             XDocument docx = XDocument.Load(filePath);
             listCars = docx.Descendants("car").Select(car =>
-                new Car(Int32.Parse(car.Element("price").Value),
+                new Car(Int32.Parse(car.Element("id").Value),
+                        Int32.Parse(car.Element("price").Value),
                         car.Element("brand").Value,
                         Int32.Parse(car.Element("yearRegistration").Value))
             ).ToList<Car>();
