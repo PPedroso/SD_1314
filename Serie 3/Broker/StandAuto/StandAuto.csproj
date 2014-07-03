@@ -71,7 +71,9 @@
     <Content Include="8001.xml">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="8002.xml" />
+    <Content Include="8002.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="8003.xml" />
     <None Include="app.config" />
   </ItemGroup>
