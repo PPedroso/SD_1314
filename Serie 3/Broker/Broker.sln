@@ -1,9 +1,14 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Broker", "Broker\Broker.csproj", "{0DE0090B-E154-4ABC-A60F-D9BFCC3F5059}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientForm", "ClientForm\ClientForm.csproj", "{1C42A928-9BF3-49BF-A16E-B5D1FCA604AB}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C3F8C9C3-244B-48F0-B1DC-B1298773831D} = {C3F8C9C3-244B-48F0-B1DC-B1298773831D}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BrokerClientContract", "BrokerContract\BrokerClientContract.csproj", "{2F35597F-6E1B-469B-B1F0-EE4D9A2B7004}"
 EndProject
