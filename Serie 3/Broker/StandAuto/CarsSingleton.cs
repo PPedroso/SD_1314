@@ -29,15 +29,15 @@ namespace StandAuto {
         }
 
         public IEnumerable<Car> getCarsWithBrand(String brand) {
-            return mapCars.Values.Where(car => string.Equals(car.getBrand(), brand, StringComparison.OrdinalIgnoreCase));
+            return mapCars.Values.Where(car => string.Equals(car.getBrand(), brand, StringComparison.OrdinalIgnoreCase) && car.getIsAvailable());
         }
 
         public IEnumerable<Car> getCarsWithYearRegistrationHigherThen(int year) {
-            return mapCars.Values.Where(car => car.getYearRegistration() >= year);
+            return mapCars.Values.Where(car => car.getYearRegistration() >= year && car.getIsAvailable());
         }
 
         public IEnumerable<Car> getCarsWithPriceLowerThen(int price) {
-            return mapCars.Values.Where(car => car.getPrice() <= price);
+            return mapCars.Values.Where(car => car.getPrice() <= price && car.getIsAvailable());
         }
 
         public bool setReservedStatus(int carId, bool isAvailable) {

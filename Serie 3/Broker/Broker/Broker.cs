@@ -15,9 +15,6 @@ namespace BrokerInterface
     public class Broker
     {
         private LinkedList<IStandBrokerContract> stands = new LinkedList<IStandBrokerContract>();
-        
-        private const string BROKER_CLIENT_ENDPOINT = "http://localhost:8080/BrokerClientService" ;
-        private const string BROKER_STAND_ENDPOINT = "http://localhost:8081/BrokerStandService";
 
         public void addStand(IStandBrokerContract proxy) {
             Console.WriteLine(String.Format("Broker adding stand: {0}",proxy.ToString()));

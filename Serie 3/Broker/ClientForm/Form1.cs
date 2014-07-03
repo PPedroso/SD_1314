@@ -73,7 +73,7 @@ namespace ClientForm
         }
 
         private void button1_Click(object sender, EventArgs e) {
-            listBox1.Text = "";
+            listBox1.Items.Clear();
             try {
                 int n;
                 string queryType = comboBox1.Text;
@@ -93,7 +93,7 @@ namespace ClientForm
                         break;
                 }
             } catch (Exception) {
-                listBox1.Text = "Failed to contact the necessary services";
+                listBox1.Items.Add("Failed to contact the necessary services");
             }
         }
 
@@ -112,7 +112,7 @@ namespace ClientForm
             try { 
                 proxy.reserveCar(p.id);
             } catch(FaultException<StandClientContract.AlreadyReservedFault> ex) {
-                MessageBox.Show(String.Format("Car with id : {} is already reserved", ex.Detail.Id));
+                MessageBox.Show(String.Format("Car with id : {0} is already reserved", ex.Detail.Id));
             }
         }
     }

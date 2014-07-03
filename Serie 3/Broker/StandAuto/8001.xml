@@ -12,14 +12,14 @@
     <price>1500</price>
     <brand>Mercedes</brand>
     <yearRegistration>2006</yearRegistration>
-    <isAvailable>0</isAvailable>
+    <isAvailable>1</isAvailable>
   </car>
   <car>
     <id>3</id>
     <price>1000</price>
     <brand>Mercedes</brand>
     <yearRegistration>2004</yearRegistration>
-    <isAvailable>0</isAvailable>
+    <isAvailable>1</isAvailable>
   </car>
   <car>
     <id>4</id>
