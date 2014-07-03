@@ -7,7 +7,7 @@ using System.ServiceModel.Description;
 using System.ServiceModel.Channels;
 using StandContract;
 using StandClientContract;
-using StandAuto.CLIENT;
+using ClientContract;
 
 namespace StandAuto
 {
@@ -45,9 +45,17 @@ namespace StandAuto
         }
 
         private void submitProposals(String client, IEnumerable<Car> cars) {
-            ClientContract proxy = new ClientContractClient();
+            
+            EndpointAddress addr = new EndpointAddress(client);
+            BasicHttpBinding bind = new BasicHttpBinding();
+
+            IChannelFactory<IClient> cfact = new ChannelFactory<IClient>(bind);
+            IClient proxy = cfact.CreateChannel(addr);
+            
+            
+            
             foreach (Car c in cars) {
-                proxy.submitProposal(Program.STAND_BROKER_SERVICE_ENDPOINT, String.Format("Car({0},{1},{2})", c.getId(), c.getBrand(), c.getYearRegistration()));
+                proxy.submitProposal(Program.STAND_CLIENT_SERVICE_ENDPOINT, c.getId(), c.getBrand(), c.getYearRegistration(), c.getPrice());
             }
         }
     }

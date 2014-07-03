@@ -29,7 +29,7 @@ namespace StandAuto {
         }
 
         public IEnumerable<Car> getCarsWithBrand(String brand) {
-            return mapCars.Values.Where(car => car.getBrand().Equals(brand));
+            return mapCars.Values.Where(car => string.Equals(car.getBrand(), brand, StringComparison.OrdinalIgnoreCase));
         }
 
         public IEnumerable<Car> getCarsWithYearRegistrationHigherThen(int year) {

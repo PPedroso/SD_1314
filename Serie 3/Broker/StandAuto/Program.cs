@@ -66,9 +66,8 @@ namespace StandAuto
             }
 
             svchost.AddServiceEndpoint(typeof(IStandBrokerContract), wsBind, wsAddr);
-            svchost.AddServiceEndpoint(typeof(StandClientContract.IStandClientContract), httpBind, httpAddr);
+            svchost.AddServiceEndpoint(typeof(IStandClientContract), httpBind, httpAddr);
             svchost.Open();
-
           
         }
 

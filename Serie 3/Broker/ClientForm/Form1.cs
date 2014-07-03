@@ -9,10 +9,12 @@ using System.Windows.Forms;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
 using System.ServiceModel.Description;
+using System.Runtime.Serialization;
 
 using BrokerClientContract;
 using StandContract;
 using StandClientContract;
+using ClientContract;
 
 namespace ClientForm
 {
@@ -33,7 +35,6 @@ namespace ClientForm
         {
             Uri addr = new Uri(CLIENT_SERVICE_ENDPOINT);
             BasicHttpBinding bind = new BasicHttpBinding();
-
             svcHost = new ServiceHost(typeof(ClientService));
 
             ServiceMetadataBehavior smb = svcHost.Description.Behaviors.Find<ServiceMetadataBehavior>();
@@ -51,7 +52,7 @@ namespace ClientForm
                 svcHost.Description.Behaviors.Add(smb);
             }
 
-            svcHost.AddServiceEndpoint(typeof(ClientContract), bind, addr);
+            svcHost.AddServiceEndpoint(typeof(IClient), bind, addr);
             svcHost.Open();
 
         }
@@ -63,8 +64,8 @@ namespace ClientForm
         }
 
 
-        public void updateTextBox(string str){
-            listBox1.Items.Add(str);
+        public void updateTextBox(Proposal p){
+            listBox1.Items.Add(p);
         }
 
         public Form1()
@@ -81,7 +82,7 @@ namespace ClientForm
         {
             try
             {
-                proxy.submitQueryByBrand("", textBox3.Text);
+                proxy.submitQueryByBrand(CLIENT_SERVICE_ENDPOINT, textBox3.Text);
             }
             catch (Exception ex)
             {
@@ -96,15 +97,32 @@ namespace ClientForm
 
         private void button2_Click(object sender, EventArgs e)
         {
-            EndpointAddress addr = new EndpointAddress("http://localhost:8010/ClientService");
+            Proposal p = (Proposal)listBox1.SelectedItem;
+            var a = p.endpoint;
+            EndpointAddress addr = new EndpointAddress(p.endpoint);
             BasicHttpBinding bind = new BasicHttpBinding();
 
-            StandClientContract.IStandClientContract proxy;
+            IStandClientContract proxy;
+            IChannelFactory<IStandClientContract> cfact = new ChannelFactory<IStandClientContract>(bind);
 
-            IChannelFactory<StandClientContract.IStandClientContract> cfact = new ChannelFactory<StandClientContract.IStandClientContract>(bind);
             proxy = cfact.CreateChannel(addr);
 
-            proxy.reserveCar(1);
+
+            try { 
+                proxy.reserveCar(p.id);
+            }
+            catch(FaultException<StandClientContract.AlreadyReservedFault> ex)
+            {
+                MessageBox.Show("Already reserved");
+            }
+            
+
+            
+        }
+
+        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+           
         }
     }
 }

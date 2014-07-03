@@ -47,7 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ClientContract.cs" />
+    <Compile Include="Proposal.cs" />
     <Compile Include="ClientService.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
@@ -116,6 +116,10 @@
     <ProjectReference Include="..\BrokerContract\BrokerClientContract.csproj">
       <Project>{2f35597f-6e1b-469b-b1f0-ee4d9a2b7004}</Project>
       <Name>BrokerClientContract</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ClientContract\ClientContract.csproj">
+      <Project>{c3f8c9c3-244b-48f0-b1dc-b1298773831d}</Project>
+      <Name>ClientContract</Name>
     </ProjectReference>
     <ProjectReference Include="..\StandClientContract\StandClientContract.csproj">
       <Project>{7374ba83-cad7-4852-9994-cdf57c255647}</Project>

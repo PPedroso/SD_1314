@@ -65,47 +65,30 @@
     <Compile Include="CarsSingleton.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Service References\CLIENT\Reference.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </Compile>
     <Compile Include="Stand.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="8001.xml" />
+    <Content Include="8001.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="8002.xml" />
     <Content Include="8003.xml" />
     <None Include="app.config" />
-    <None Include="Service References\CLIENT\Reference.svcmap">
-      <Generator>WCF Proxy Generator</Generator>
-      <LastGenOutput>Reference.cs</LastGenOutput>
-    </None>
-    <None Include="Service References\CLIENT\configuration.svcinfo" />
-    <None Include="Service References\CLIENT\configuration91.svcinfo" />
-    <None Include="Service References\CLIENT\ClientService.disco" />
-    <None Include="Service References\CLIENT\ClientService.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\CLIENT\ClientService1.wsdl" />
-    <None Include="Service References\CLIENT\ClientService1.xsd">
-      <SubType>Designer</SubType>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="Service References\CLIENT\ClientService.wsdl" />
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadataStorage Include="Service References\CLIENT\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BrokerStandContract\BrokerStandContract.csproj">
       <Project>{4d73688f-1ffd-4fa0-b6ff-d019622c43c4}</Project>
       <Name>BrokerStandContract</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ClientContract\ClientContract.csproj">
+      <Project>{c3f8c9c3-244b-48f0-b1dc-b1298773831d}</Project>
+      <Name>ClientContract</Name>
     </ProjectReference>
     <ProjectReference Include="..\StandClientContract\StandClientContract.csproj">
       <Project>{7374ba83-cad7-4852-9994-cdf57c255647}</Project>
