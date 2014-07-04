@@ -1,0 +1,140 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Title page template been downloaded from:
+% http://www.LaTeXTemplates.com
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[a4paper]{article}
+\RequirePackage[utf8]{inputenc}
+\usepackage[portuguese]{babel}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{empheq}
+\usepackage{framed}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=Java,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3,
+  literate=
+  {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+  {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+  {à}{{\`a}}1 {è}{{\'e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+  {À}{{\`A}}1 {È}{{\'E}}1 {Ì}{{\`I}}1 {Ò}{{\`O}}1 {Ù}{{\`U}}1
+  {ä}{{\"a}}1 {ë}{{\"e}}1 {ï}{{\"i}}1 {ö}{{\"o}}1 {ü}{{\"u}}1
+  {Ä}{{\"A}}1 {Ë}{{\"E}}1 {Ï}{{\"I}}1 {Ö}{{\"O}}1 {Ü}{{\"U}}1
+  {â}{{\^a}}1 {ê}{{\^e}}1 {î}{{\^i}}1 {ô}{{\^o}}1 {û}{{\^u}}1
+  {Â}{{\^A}}1 {Ê}{{\^E}}1 {Î}{{\^I}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1
+  {œ}{{\oe}}1 {Œ}{{\OE}}1 {æ}{{\ae}}1 {Æ}{{\AE}}1 {ß}{{\ss}}1
+  {ç}{{\c c}}1 {Ç}{{\c C}}1 {ø}{{\o}}1 {å}{{\r a}}1 {Å}{{\r A}}1
+  {€}{{\EUR}}1 {£}{{\pounds}}1
+}
+
+\newlength\dlf  % Define a new measure, dlf
+\newcommand\alignedbox[2]{
+% Argument #1 = before & if there were no box (lhs)
+% Argument #2 = after & if there were no box (rhs)
+&  % Alignment sign of the line
+{
+\settowidth\dlf{$\displaystyle #1$}  
+    % The width of \dlf is the width of the lhs, with a displaystyle font
+\addtolength\dlf{\fboxsep+\fboxrule}  
+    % Add to it the distance to the box, and the width of the line of the box
+\hspace{-\dlf}  
+    % Move everything dlf units to the left, so that & #1 #2 is aligned under #1 & #2
+\boxed{#1 #2}
+    % Put a box around lhs and rhs
+}
+}
+
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}} % Defines a new command for the horizontal lines, change thickness here
+
+\begin{document}
+
+\begin{titlepage}
+
+\center % Center everything on the page
+ 
+%----------------------------------------------------------------------------------------
+%	HEADING SECTIONS
+%----------------------------------------------------------------------------------------
+
+\textsc{\LARGE Instituto Superior de Engenharia de Lisboa}\\[1.5cm] % Name of your university/college
+\textsc{\Large Sistemas Distribuidos}\\[0.5cm] % Major heading such as course name
+
+%----------------------------------------------------------------------------------------
+%	TITLE SECTION
+%----------------------------------------------------------------------------------------
+
+\HRule \\[0.4cm]
+{ \huge \bfseries Relatório da terceira série}\\[0.4cm] % Title of your document
+\HRule \\[1.5cm]
+ 
+%----------------------------------------------------------------------------------------
+%	AUTHOR SECTION
+%----------------------------------------------------------------------------------------
+
+\begin{minipage}{0.4\textwidth}
+\begin{flushleft} \large
+\emph{Autoria:}\\
+33724 David \textsc{Raposo} \\
+32632 Pedro \textsc{Pedroso} \\
+33404 Ricardo \textsc{Mata} \\
+\end{flushleft}
+\end{minipage}
+
+
+%----------------------------------------------------------------------------------------
+%	DATE SECTION
+%----------------------------------------------------------------------------------------
+{\large \today}\\[3cm] % Date, change the \today to a set date if you want to be precise
+
+\vfill % Fill the rest of the page with whitespace
+
+\end{titlepage}
+
+%----------------------------------------------------------------------------------------
+%	ÍNDICE
+%----------------------------------------------------------------------------------------
+
+\newpage
+\thispagestyle{empty} %Remove a númeração da página
+
+\tableofcontents
+
+%----------------------------------------------------------------------------------------
+%	BODY
+%----------------------------------------------------------------------------------------
+\newpage
+\setcounter{page}{1} %começa a contar as páginas apartir do 1
+
+\section{Componentes}
+
+
+
+
+\section{Concorrência} 
+
+Nos diversos serviços criados, problemas de concorrência apenas poderiam surgir no \emph{Broker} (devido ao \emph{broadcast} das pesquisas poder concorrer com adições/remoções de stands) e nos \emph{Stands} (já que pode ser desejavel evitar a propagação de propostas para carros já reservados). Em ambos os casos optou-se por permitir que os serviços em si sejam concorrentes, o que perimtiu que ambos serviços fossem \emph{Singleton's}.
+
+As implementações thread-safe foram diferentes em cada situação, para resolver a situação da adição de \emph{Stands} enquando pesquisas estão a decorrer, optou-se por usar mecanismos de \emph{lock}, já que não foi encontrada nenhuma colecçã concorrente que suportasse remoçao adequada. Enquanto no caso das reservas, optou-se por permitir que pesquisas obtivessem resultados que talvez não tenham a sua reserva registada, assegurando apenas que não é possivel multiplas reservas no mesmo carro.
+
+
+\end{document}
