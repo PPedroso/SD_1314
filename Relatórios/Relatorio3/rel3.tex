@@ -125,6 +125,36 @@
 \newpage
 \setcounter{page}{1} %começa a contar as páginas apartir do 1
 
+\section{Introdução}
+
+Neste terceiro trabalho da disciplina de Sistemas Distribuidos, foi requerido que se implementasse as diferentes componentes de um sistema de pesquisa de automóveis e respectiva reserva.
+
+Este sistema é composto pelos seguintes intervenientes:
+
+\begin{itemize}
+
+\item
+\underline{Cliente}: Aplicação gráfica onde seráo feitas as pesquisas e respectivos pedidos de reserva.
+
+\item
+\underline{Stands}: Aplicações que contêm um conjunto de carros, onde incidem as pesquisas e reservas dos clientes. Mantém dados persistentes usando ficheiros \emph{XML} para obter/guardar a informação necesária. 
+
+\item
+\underline{Broker}: Aplicação que o cliente comunicará para fazer a sua pesquisa e onde os \emph{stands} se podem registar para mais tarde ser propagada as pesquisas dos clientes.
+
+\end{itemize}
+
+-----------------------------------------------
+
+fluxo das operações
+
+-----------------------------------------------
+
+As diversas aplicações foram desemvolvidas em \emph{c-sharp}. Na componente gráfica do cliente foi usado \emph{Windows Forms}, enquanto para a componente \emph{web} das diversas aplicações foi usado \emph{WCF}.
+
+Para o demvolvimento dos serviços, existem um conjunto de restrições, sendo estas o uso de \emph{Binding wsHttpBinding} durante a comunicação entre 
+
+
 \section{Componentes}
 
 
