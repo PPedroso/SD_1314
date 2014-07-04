@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="bf01e2be-8727-4df6-9e39-328318bf6ce1" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://localhost:8080/BrokerClientService" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="BrokerClientService.wsdl" MetadataType="Wsdl" ID="5fc9b54a-6ee2-4520-9f63-2e0eae9542d1" SourceId="1" SourceUrl="http://localhost:8080/BrokerClientService?wsdl=wsdl1" />
+    <MetadataFile FileName="BrokerClientService.xsd" MetadataType="Schema" ID="60647bd6-356c-45f0-b179-757cf0e27384" SourceId="1" SourceUrl="http://localhost:8080/BrokerClientService?xsd=xsd0" />
+    <MetadataFile FileName="BrokerClientService1.xsd" MetadataType="Schema" ID="7f72cf56-ca3b-4d33-8a60-4778cfefff6d" SourceId="1" SourceUrl="http://localhost:8080/BrokerClientService?xsd=xsd1" />
+    <MetadataFile FileName="BrokerClientService1.wsdl" MetadataType="Wsdl" ID="98915624-78fc-405d-a3ee-88465c6d890f" SourceId="1" SourceUrl="http://localhost:8080/BrokerClientService?wsdl=wsdl0" />
+    <MetadataFile FileName="BrokerClientService.disco" MetadataType="Disco" ID="5f160f4d-49c9-4803-ab76-93591fc1b3c9" SourceId="1" SourceUrl="http://localhost:8080/BrokerClientService?disco" />
+    <MetadataFile FileName="BrokerClientService2.xsd" MetadataType="Schema" ID="fba25b84-d63b-4569-9bfc-0dd0d348d0c3" SourceId="1" SourceUrl="http://localhost:8080/BrokerClientService?xsd=xsd2" />
+    <MetadataFile FileName="BrokerServices.wsdl" MetadataType="Wsdl" ID="81582274-5fd1-4c54-82e0-1c584aad363b" SourceId="1" SourceUrl="http://localhost:8080/BrokerClientService?wsdl" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>
