@@ -13,6 +13,7 @@
 \usepackage{amsmath}
 \usepackage{empheq}
 \usepackage{framed}
+\usepackage{float}
 
 \definecolor{dkgreen}{rgb}{0,0.6,0}
 \definecolor{gray}{rgb}{0.5,0.5,0.5}
@@ -144,7 +145,6 @@ Este sistema é composto pelos seguintes intervenientes:
 
 \end{itemize}
 
------------------------------------------------
 
 \section{Arquitetura}
 (Adicionar imagem da arquitetura)
@@ -155,7 +155,7 @@ Este sistema é composto pelos seguintes intervenientes:
 
 As diversas aplicações foram desenvolvidas em \emph{c-\#}. Na componente gráfica do cliente foi usado \emph{Windows Forms}, enquanto para a componente \emph{web} das diversas aplicações foi usado \emph{WCF}.
 
-Para o desenvolvimento dos serviços, existem um conjunto de restrições, sendo estas o uso de \emph{Binding wsHttpBinding} durante a comunicação entre 
+Para o desenvolvimento dos serviços, existem restrições em relação aos \emph{bindings} que podem ser usados (\emph{Binding wsHttpBinding} e \emph{basicHttpBinding}). Tendo em conta que não foi possivel usar \emph{bindings} com suporte para \emph{callbacks}, optou-se por passar os endereços durante as diversas comunicações, para executar posteriormente a entrega/aceitação de propostas.
 
 \newpage
 
@@ -186,10 +186,10 @@ Serviço que permite que um \emph{stand} se registe no \emph{Broker} para recebe
 		\begin{itemize}
 		\item
 		Modo de instanciação: \underline{Singleton}
-		(What to say here....)
+		Devido a existenência de dois serviços, foi necessário usar \emph{partial classes}, logo, o modo de instanciação teria de ser igual a \emph{IBrokerClientService}.
 		\item
 		Modo de controlo de concorrência: \underline{Multiple}
-		Com a possibilidade de vários stands se registarem ao mesmo tempo, utilizamos um modo de concorrência \emph{Multiple}. Isto cria problemas em relação ao sincronismo do objeto que está a ser usado para guardar os \emph{proxies} que é resolvido (david preciso que expliques aqui o método que usaste para resolver esta concorrencia)
+		Com a possibilidade de vários stands se registarem ao mesmo tempo, utilizamos um modo de concorrência \emph{Multiple}. Isto cria problemas em relação ao sincronismo do objeto que está a ser usado para guardar os \emph{proxies}, em que se optou por usar mecanismos de \emph{lock}, já que não foi encontrada nenhuma coleção concorrente que suportasse remoção adequada.
 		
 		\item
 		Binding utilizado: \underline{wsHttpBinding}
@@ -222,7 +222,7 @@ Serviço que permite aos stands submeteram as propostas aos clientes.
 
 
 \subsection{\emph{StandAuto}}
-Componente que faz guarda a base de dados de carros e submete as propostas aos clientes com base nas pesquisas feitas.
+Componente que mantem persistente dados de carros e submete as propostas aos clientes com base nas pesquisas feitas.
 \subsubsection{Serviços disponibilizados}
 \begin{itemize} 
 
@@ -244,15 +244,30 @@ Serviço que permite ao \emph{Broker} propagar a pesquisa aos \emph{stands}.
 \end{itemize}
 
 
-\subsubsection{Base de dados}
-(Explicação do processo de storage da base de dados de modo persistente)
+\subsubsection{Persistência de dados}
 
+Um dos requesitos da aplicação, era que os carros que cada \emph{stand} disponibiliza, fossem persistentes através do uso de ficheiros \emph{.xml}. 
 
-\section{Concorrência} 
+Como tal, definiu-se que cada carro teria a seguintes estrutura:
 
-Nos diversos serviços criados, problemas de concorrência apenas poderiam surgir no \emph{Broker} (devido ao \emph{broadcast} das pesquisas poder concorrer com adições/remoções de stands) e nos \emph{Stands} (já que pode ser desejável evitar a propagação de propostas para carros já reservados). Em ambos os casos optou-se por permitir que os serviços em si sejam concorrentes, o que permitiu que ambos serviços fossem \emph{Singletons}.
+\begin{figure}[H]
+	\begin{framed}
+		\texttt{<car> \\
+					\hspace*{5mm}<id> identificadar dentro do \emph{stand} em concreto</id> \\
+					\hspace*{5mm}<price> preço </price>\\
+					\hspace*{5mm}<brand> marca </brand>\\
+					\hspace*{5mm}<yearRegistration> ano do registo de matricula</yearRegistration>\\
+					\hspace*{5mm}<isAvailable> Se está reservado de momento</isAvailable>\\
+			    </car>
+		}		
+	\end{framed}
+	\caption{Estrutura de cada entrada}
+  \label{fig:httpHeaderReq}
+\end{figure}
 
-As implementações \emph{thread-safe }foram diferentes em cada situação, para resolver a situação da adição de \emph{Stands} enquanto pesquisas estão a decorrer, optou-se por usar mecanismos de \emph{lock}, já que não foi encontrada nenhuma coleção concorrente que suportasse remoção adequada. Enquanto no caso das reservas, optou-se por permitir que pesquisas obtivessem resultados que talvez não tenham a sua reserva registada, assegurando apenas que não é possível múltiplas reservas no mesmo carro.
+Não foi adicionado nenhum mecanismo de verificação da validade destes ficheiros (\emph{.xsd}), sendo apenas possivel passar de não reservado para reservado. Qualquer outra alteração terá de ser feita manualmente sobre estes ficheiros.
+Em relação a problemas gerados devido a concorrência, optou-se por assegurar apenas que não é possível múltiplas reservas no mesmo carro, informando o cliente desta situação.
+
 
 \section{Conclusões}
 
