@@ -77,7 +77,7 @@
 %----------------------------------------------------------------------------------------
 
 \textsc{\LARGE Instituto Superior de Engenharia de Lisboa}\\[1.5cm] % Name of your university/college
-\textsc{\Large Sistemas Distribuidos}\\[0.5cm] % Major heading such as course name
+\textsc{\Large Sistemas Distribuídos}\\[0.5cm] % Major heading such as course name
 
 %----------------------------------------------------------------------------------------
 %	TITLE SECTION
@@ -94,8 +94,8 @@
 \begin{minipage}{0.4\textwidth}
 \begin{flushleft} \large
 \emph{Autoria:}\\
-33724 David \textsc{Raposo} \\
 32632 Pedro \textsc{Pedroso} \\
+33724 David \textsc{Raposo} \\
 33404 Ricardo \textsc{Mata} \\
 \end{flushleft}
 \end{minipage}
@@ -127,17 +127,17 @@
 
 \section{Introdução}
 
-Neste terceiro trabalho da disciplina de Sistemas Distribuidos, foi requerido que se implementasse as diferentes componentes de um sistema de pesquisa de automóveis e respectiva reserva.
+Neste terceiro trabalho da disciplina de Sistemas Distribuídos, foi requerido que se implementasse as diferentes componentes de um sistema de pesquisa de automóveis e respetiva reserva.
 
 Este sistema é composto pelos seguintes intervenientes:
 
 \begin{itemize}
 
 \item
-\underline{Cliente}: Aplicação gráfica onde seráo feitas as pesquisas e respectivos pedidos de reserva.
+\underline{Cliente}: Aplicação gráfica onde serão feitas as pesquisas e respetivos pedidos de reserva.
 
 \item
-\underline{Stands}: Aplicações que contêm um conjunto de carros, onde incidem as pesquisas e reservas dos clientes. Mantém dados persistentes usando ficheiros \emph{XML} para obter/guardar a informação necesária. 
+\underline{Stands}: Aplicações que contêm um conjunto de carros, onde incidem as pesquisas e reservas dos clientes. Mantém dados persistentes usando ficheiros \emph{XML} para obter/guardar a informação necessária. 
 
 \item
 \underline{Broker}: Aplicação que o cliente comunicará para fazer a sua pesquisa e onde os \emph{stands} se podem registar para mais tarde ser propagada as pesquisas dos clientes.
@@ -146,25 +146,115 @@ Este sistema é composto pelos seguintes intervenientes:
 
 -----------------------------------------------
 
-fluxo das operações
+\section{Arquitetura}
+(Adicionar imagem da arquitetura)
+
+(Explicação do flow da informação. Assim como são passados os endpoints do cliente para o stand e do stand para o cliente)
 
 -----------------------------------------------
 
-As diversas aplicações foram desemvolvidas em \emph{c-sharp}. Na componente gráfica do cliente foi usado \emph{Windows Forms}, enquanto para a componente \emph{web} das diversas aplicações foi usado \emph{WCF}.
+As diversas aplicações foram desenvolvidas em \emph{c-\#}. Na componente gráfica do cliente foi usado \emph{Windows Forms}, enquanto para a componente \emph{web} das diversas aplicações foi usado \emph{WCF}.
 
-Para o demvolvimento dos serviços, existem um conjunto de restrições, sendo estas o uso de \emph{Binding wsHttpBinding} durante a comunicação entre 
+Para o desenvolvimento dos serviços, existem um conjunto de restrições, sendo estas o uso de \emph{Binding wsHttpBinding} durante a comunicação entre 
 
+\newpage
 
 \section{Componentes}
 
+\subsection{\emph{Broker} } Componente intermédio para fazer \emph{broadcast} ás pesquisas dos clientes para os stands e para registar os mesmos.
 
+\subsubsection{Serviços disponibilizados}
+\begin{itemize} 
+
+\item
+\emph{\underline{IBrokerClientService:}}
+Serviço que permite aos clientes submeterem as suas pesquisas ao \emph{Broker}.
+	\begin{itemize}
+		\item
+		Modo de instanciação: \underline{Singleton}\\
+		Visto não haver alterações de objetos neste serviço e admitindo que haverá vários clientes a fazer várias pesquisas então não seria razoável criar um objeto por chamada. Um só objeto consegue lidar com os pedidos de forma eficaz.
+		\item
+		Modo de controlo de concorrência: \underline{Multiple}\\
+		Ao receber vários pedidos será razoável que o processamento desses pedidos seja \emph{multi-thread}. Visto não haver alterações nenhumas em váriaveis no \emph{Singleton} então não é necessário sincronismo adicional por parte do \emph{Broker}.
+		\item
+		Binding utilizado: \underline{basicHttpBinding}\\
+		Visto a informação enviada para o \emph{Broker} não ter dados importantes, é utilizado \emph{basicHttpBinding} para simplificar a mensagem enviada. Visto também que o cliente não obtém \emph{feedback} nesta comunicação, os métodos estão declarados como \emph{IsOneWay}. Esta opção faz com que o \emph{emph} seja imediatamente libertado após a receção da mensagem por parte do \emph{Broker} e liberta este \emph{binding } para ser utilizado pelos stands para submissão de propostas.
+	\end{itemize}
+\item
+\emph{\underline{IBrokerStandService:}}
+Serviço que permite que um \emph{stand} se registe no \emph{Broker} para receber as pesquisas dos clientes.
+		\begin{itemize}
+		\item
+		Modo de instanciação: \underline{Singleton}
+		(What to say here....)
+		\item
+		Modo de controlo de concorrência: \underline{Multiple}
+		Com a possibilidade de vários stands se registarem ao mesmo tempo, utilizamos um modo de concorrência \emph{Multiple}. Isto cria problemas em relação ao sincronismo do objeto que está a ser usado para guardar os \emph{proxies} que é resolvido (david preciso que expliques aqui o método que usaste para resolver esta concorrencia)
+		
+		\item
+		Binding utilizado: \underline{wsHttpBinding}
+		Binding utilizado como requisito não funcional.
+	\end{itemize}
+\end{itemize}
+
+
+\subsection{\emph{Client}}
+Componente que faz a submissão das propostas e reserva dos carros. O cliente tem uma interface gráfica para melhor ajudar a visualização das propostas e submissão das várias pesquisas.
+\subsubsection{Serviços disponibilizados}
+\begin{itemize} 
+
+\item
+\emph{\underline{IClient:}}
+Serviço que permite aos stands submeteram as propostas aos clientes.
+	\begin{itemize}
+		\item
+		Modo de instanciação: \underline{PerCall}\\
+		Um cliente só receberá propostas depois de efetuar uma pesquisa. Isto faz com que usar um objecto Singleton não seja razoável no sentido que não há necessidade de manter um objeto de serviço alocado quando não se espera mais propostas. Por esta razão foi escolhido o método de instanciação \emph{PerCall} que cria um objeto de serviço que tem a duração da submissão da proposta.
+		\item
+		Modo de controlo de concorrência: \underline{Multiple}\\
+		(como é que o updateTextBox no submitProposal está a funcionar threadsafe se isto está com multiple?)
+		
+		\item
+		Binding utilizado: \underline{basicHttpBinding}\\
+		Binding utilizado como requisito não funcional.
+	\end{itemize}
+\end{itemize}
+
+
+\subsection{\emph{StandAuto}}
+Componente que faz guarda a base de dados de carros e submete as propostas aos clientes com base nas pesquisas feitas.
+\subsubsection{Serviços disponibilizados}
+\begin{itemize} 
+
+\item
+\emph{\underline{IStandBrokerContract:}}
+Serviço que permite ao \emph{Broker} propagar a pesquisa aos \emph{stands}.
+	\begin{itemize}
+		\item
+		Modo de instanciação: \underline{Singleton}\\
+		Admitindo que este serviço irá estar frequentemente a receber pedidos vindos do \emph{Broker} é razoável a utilização de um objeto de serviço \emph{Singleton}.
+		\item
+		Modo de controlo de concorrência: \underline{Multiple}\\
+		Vários pedidos implicam um ambiente \emph{multi-thread} portanto é usado o controlo de concorrência \emph{multiple}.
+		Não é alterado nenhum objeto no \emph{stand} portanto não é necessário controlo de concorrência adicional.
+		\item
+		Binding utilizado: \underline{wsHttpBinding}\\
+		Binding utilizado como requisito não funcional.
+	\end{itemize}
+\end{itemize}
+
+
+\subsubsection{Base de dados}
+(Explicação do processo de storage da base de dados de modo persistente)
 
 
 \section{Concorrência} 
 
-Nos diversos serviços criados, problemas de concorrência apenas poderiam surgir no \emph{Broker} (devido ao \emph{broadcast} das pesquisas poder concorrer com adições/remoções de stands) e nos \emph{Stands} (já que pode ser desejavel evitar a propagação de propostas para carros já reservados). Em ambos os casos optou-se por permitir que os serviços em si sejam concorrentes, o que perimtiu que ambos serviços fossem \emph{Singleton's}.
+Nos diversos serviços criados, problemas de concorrência apenas poderiam surgir no \emph{Broker} (devido ao \emph{broadcast} das pesquisas poder concorrer com adições/remoções de stands) e nos \emph{Stands} (já que pode ser desejável evitar a propagação de propostas para carros já reservados). Em ambos os casos optou-se por permitir que os serviços em si sejam concorrentes, o que permitiu que ambos serviços fossem \emph{Singletons}.
 
-As implementações thread-safe foram diferentes em cada situação, para resolver a situação da adição de \emph{Stands} enquando pesquisas estão a decorrer, optou-se por usar mecanismos de \emph{lock}, já que não foi encontrada nenhuma colecçã concorrente que suportasse remoçao adequada. Enquanto no caso das reservas, optou-se por permitir que pesquisas obtivessem resultados que talvez não tenham a sua reserva registada, assegurando apenas que não é possivel multiplas reservas no mesmo carro.
+As implementações \emph{thread-safe }foram diferentes em cada situação, para resolver a situação da adição de \emph{Stands} enquanto pesquisas estão a decorrer, optou-se por usar mecanismos de \emph{lock}, já que não foi encontrada nenhuma coleção concorrente que suportasse remoção adequada. Enquanto no caso das reservas, optou-se por permitir que pesquisas obtivessem resultados que talvez não tenham a sua reserva registada, assegurando apenas que não é possível múltiplas reservas no mesmo carro.
+
+\section{Conclusões}
 
 
 \end{document}
