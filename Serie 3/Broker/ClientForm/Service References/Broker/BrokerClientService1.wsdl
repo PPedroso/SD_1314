@@ -6,24 +6,24 @@
       <xsd:import schemaLocation="http://localhost:8080/BrokerClientService?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
     </xsd:schema>
   </wsdl:types>
-  <wsdl:message name="IBrokerClientService_submitQueryByBrand_InputMessage">
+  <wsdl:message name="IBrokerClient_submitQueryByBrand_InputMessage">
     <wsdl:part name="parameters" element="tns:submitQueryByBrand" />
   </wsdl:message>
-  <wsdl:message name="IBrokerClientService_submitQueryByMinumumYearRegistration_InputMessage">
+  <wsdl:message name="IBrokerClient_submitQueryByMinumumYearRegistration_InputMessage">
     <wsdl:part name="parameters" element="tns:submitQueryByMinumumYearRegistration" />
   </wsdl:message>
-  <wsdl:message name="IBrokerClientService_submitQueryByMaxPrice_InputMessage">
+  <wsdl:message name="IBrokerClient_submitQueryByMaxPrice_InputMessage">
     <wsdl:part name="parameters" element="tns:submitQueryByMaxPrice" />
   </wsdl:message>
-  <wsdl:portType name="IBrokerClientService">
+  <wsdl:portType name="IBrokerClient">
     <wsdl:operation name="submitQueryByBrand">
-      <wsdl:input wsaw:Action="http://ISEL.BROKER.CLIENT/IBrokerClientService/submitQueryByBrand" message="tns:IBrokerClientService_submitQueryByBrand_InputMessage" />
+      <wsdl:input wsaw:Action="http://ISEL.BROKER.CLIENT/IBrokerClient/submitQueryByBrand" message="tns:IBrokerClient_submitQueryByBrand_InputMessage" />
     </wsdl:operation>
     <wsdl:operation name="submitQueryByMinumumYearRegistration">
-      <wsdl:input wsaw:Action="http://ISEL.BROKER.CLIENT/IBrokerClientService/submitQueryByMinumumYearRegistration" message="tns:IBrokerClientService_submitQueryByMinumumYearRegistration_InputMessage" />
+      <wsdl:input wsaw:Action="http://ISEL.BROKER.CLIENT/IBrokerClient/submitQueryByMinumumYearRegistration" message="tns:IBrokerClient_submitQueryByMinumumYearRegistration_InputMessage" />
     </wsdl:operation>
     <wsdl:operation name="submitQueryByMaxPrice">
-      <wsdl:input wsaw:Action="http://ISEL.BROKER.CLIENT/IBrokerClientService/submitQueryByMaxPrice" message="tns:IBrokerClientService_submitQueryByMaxPrice_InputMessage" />
+      <wsdl:input wsaw:Action="http://ISEL.BROKER.CLIENT/IBrokerClient/submitQueryByMaxPrice" message="tns:IBrokerClient_submitQueryByMaxPrice_InputMessage" />
     </wsdl:operation>
   </wsdl:portType>
 </wsdl:definitions>

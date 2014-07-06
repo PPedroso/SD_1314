@@ -12,7 +12,7 @@ using ClientContract;
 namespace StandAuto
 {
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple)]
-    partial class Stand : IStandBrokerContract {
+    partial class Stand : IStandBroker {
 
         private Object lockObj = new Object();
         private CarsSingleton carsSingleton = CarsSingleton.getInstance();
@@ -60,7 +60,7 @@ namespace StandAuto
         }
     }
 
-    partial class Stand : IStandClientContract {
+    partial class Stand : IStandClient {
         public void reserveCar(int id) {
             if (!carsSingleton.setReservedStatus(id, true)) {
                 throw new FaultException<AlreadyReservedFault>(new AlreadyReservedFault { Id = id });

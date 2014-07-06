@@ -15,9 +15,9 @@ namespace BrokerInterface
     public class Broker
     {
         private readonly Object lockObj = new Object();
-        private List<IStandBrokerContract> stands = new List<IStandBrokerContract>();
+        private List<IStandBroker> stands = new List<IStandBroker>();
 
-        public void addStand(IStandBrokerContract proxy) {
+        public void addStand(IStandBroker proxy) {
             Console.WriteLine(String.Format("Broker adding stand: {0}",proxy.ToString()));
             lock (lockObj) {
                 stands.Add(proxy);
@@ -60,7 +60,7 @@ namespace BrokerInterface
             });
         }
 
-        private void broadcast(string client, Func<IStandBrokerContract, bool> func) {
+        private void broadcast(string client, Func<IStandBroker, bool> func) {
             lock(lockObj) {
                 for (int i = 0; i < stands.Count; i++) {
                     if (func(stands[i])) {

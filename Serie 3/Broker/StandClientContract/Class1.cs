@@ -8,7 +8,7 @@ using System.ServiceModel.Description;
 namespace StandClientContract
 {
     [ServiceContract(Namespace = "http://ISEL.STAND.CLIENT")]
-    public interface IStandClientContract
+    public interface IStandClient
     {
         [OperationContract]
         [FaultContract(typeof(AlreadyReservedFault))]

@@ -9,7 +9,7 @@ namespace BrokerClientContract
 {
 
     [ServiceContract(Namespace = "http://ISEL.BROKER.CLIENT")]
-    public interface IBrokerClientService
+    public interface IBrokerClient
     {   
         [OperationContract(IsOneWay = true)]
         void submitQueryByBrand(string client, string brand);

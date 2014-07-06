@@ -7,16 +7,16 @@
       <xsd:import schemaLocation="http://localhost:8080/BrokerClientService?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
     </xsd:schema>
   </wsdl:types>
-  <wsdl:message name="IBrokerStandService_registerStand_InputMessage">
+  <wsdl:message name="IBrokerStand_registerStand_InputMessage">
     <wsdl:part name="parameters" element="tns:registerStand" />
   </wsdl:message>
-  <wsdl:message name="IBrokerStandService_registerStand_OutputMessage">
+  <wsdl:message name="IBrokerStand_registerStand_OutputMessage">
     <wsdl:part name="parameters" element="tns:registerStandResponse" />
   </wsdl:message>
-  <wsdl:portType name="IBrokerStandService">
+  <wsdl:portType name="IBrokerStand">
     <wsdl:operation name="registerStand">
-      <wsdl:input wsaw:Action="http://ISEL.BROKER.STAND/IBrokerStandService/registerStand" message="tns:IBrokerStandService_registerStand_InputMessage" />
-      <wsdl:output wsaw:Action="http://ISEL.BROKER.STAND/IBrokerStandService/registerStandResponse" message="tns:IBrokerStandService_registerStand_OutputMessage" />
+      <wsdl:input wsaw:Action="http://ISEL.BROKER.STAND/IBrokerStand/registerStand" message="tns:IBrokerStand_registerStand_InputMessage" />
+      <wsdl:output wsaw:Action="http://ISEL.BROKER.STAND/IBrokerStand/registerStandResponse" message="tns:IBrokerStand_registerStand_OutputMessage" />
     </wsdl:operation>
   </wsdl:portType>
 </wsdl:definitions>

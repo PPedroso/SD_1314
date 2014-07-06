@@ -27,7 +27,7 @@ namespace ClientForm
         const string QUERY_BY_YEAR = "Year of Registration";
         static string CLIENT_SERVICE_ENDPOINT;
 
-        BrokerClientServiceClient proxy;
+        BrokerClientClient proxy;
         public static Form _Form1;
         static ServiceHost svcHost;
 
@@ -45,13 +45,13 @@ namespace ClientForm
 
 
         public void updateTextBox(Proposal p){
-            listBox1.Items.Add(p);
+            listBox1.BeginInvoke(new Action(() => listBox1.Items.Add(p)));
         }
 
         public Form1() {
             InitializeComponent();
             _Form1 = this;
-            proxy = new BrokerClientServiceClient();
+            proxy = new BrokerClientClient();
             RunService();
         }
 
@@ -86,8 +86,8 @@ namespace ClientForm
             EndpointAddress addr = new EndpointAddress(p.endpoint);
             BasicHttpBinding bind = new BasicHttpBinding();
 
-            IStandClientContract proxy;
-            IChannelFactory<IStandClientContract> cfact = new ChannelFactory<IStandClientContract>(bind);
+            IStandClient proxy;
+            IChannelFactory<IStandClient> cfact = new ChannelFactory<IStandClient>(bind);
 
             proxy = cfact.CreateChannel(addr);
 

@@ -7,7 +7,7 @@ using System.ServiceModel;
 namespace StandContract
 {
     [ServiceContract(Namespace = "http://ISEL.STAND.BROKER")]
-    public interface IStandBrokerContract
+    public interface IStandBroker
     {
         [OperationContract]
         void queryByBrand(string client, String brand);

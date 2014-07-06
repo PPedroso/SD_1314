@@ -12,37 +12,37 @@ namespace ClientForm.Broker {
     
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    [System.ServiceModel.ServiceContractAttribute(Namespace="http://ISEL.BROKER.STAND", ConfigurationName="Broker.IBrokerStandService")]
-    public interface IBrokerStandService {
+    [System.ServiceModel.ServiceContractAttribute(Namespace="http://ISEL.BROKER.STAND", ConfigurationName="Broker.IBrokerStand")]
+    public interface IBrokerStand {
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://ISEL.BROKER.STAND/IBrokerStandService/registerStand", ReplyAction="http://ISEL.BROKER.STAND/IBrokerStandService/registerStandResponse")]
+        [System.ServiceModel.OperationContractAttribute(Action="http://ISEL.BROKER.STAND/IBrokerStand/registerStand", ReplyAction="http://ISEL.BROKER.STAND/IBrokerStand/registerStandResponse")]
         void registerStand(string standEndpoint);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public interface IBrokerStandServiceChannel : ClientForm.Broker.IBrokerStandService, System.ServiceModel.IClientChannel {
+    public interface IBrokerStandChannel : ClientForm.Broker.IBrokerStand, System.ServiceModel.IClientChannel {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public partial class BrokerStandServiceClient : System.ServiceModel.ClientBase<ClientForm.Broker.IBrokerStandService>, ClientForm.Broker.IBrokerStandService {
+    public partial class BrokerStandClient : System.ServiceModel.ClientBase<ClientForm.Broker.IBrokerStand>, ClientForm.Broker.IBrokerStand {
         
-        public BrokerStandServiceClient() {
+        public BrokerStandClient() {
         }
         
-        public BrokerStandServiceClient(string endpointConfigurationName) : 
+        public BrokerStandClient(string endpointConfigurationName) : 
                 base(endpointConfigurationName) {
         }
         
-        public BrokerStandServiceClient(string endpointConfigurationName, string remoteAddress) : 
+        public BrokerStandClient(string endpointConfigurationName, string remoteAddress) : 
                 base(endpointConfigurationName, remoteAddress) {
         }
         
-        public BrokerStandServiceClient(string endpointConfigurationName, System.ServiceModel.EndpointAddress remoteAddress) : 
+        public BrokerStandClient(string endpointConfigurationName, System.ServiceModel.EndpointAddress remoteAddress) : 
                 base(endpointConfigurationName, remoteAddress) {
         }
         
-        public BrokerStandServiceClient(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : 
+        public BrokerStandClient(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : 
                 base(binding, remoteAddress) {
         }
         
@@ -52,44 +52,43 @@ namespace ClientForm.Broker {
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    [System.ServiceModel.ServiceContractAttribute(Namespace="http://ISEL.BROKER.CLIENT", ConfigurationName="Broker.IBrokerClientService")]
-    public interface IBrokerClientService {
+    [System.ServiceModel.ServiceContractAttribute(Namespace="http://ISEL.BROKER.CLIENT", ConfigurationName="Broker.IBrokerClient")]
+    public interface IBrokerClient {
         
-        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://ISEL.BROKER.CLIENT/IBrokerClientService/submitQueryByBrand")]
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://ISEL.BROKER.CLIENT/IBrokerClient/submitQueryByBrand")]
         void submitQueryByBrand(string client, string brand);
         
-        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://ISEL.BROKER.CLIENT/IBrokerClientService/submitQueryByMinumumYearRegistrati" +
-            "on")]
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://ISEL.BROKER.CLIENT/IBrokerClient/submitQueryByMinumumYearRegistration")]
         void submitQueryByMinumumYearRegistration(string client, int yearRegistration);
         
-        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://ISEL.BROKER.CLIENT/IBrokerClientService/submitQueryByMaxPrice")]
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://ISEL.BROKER.CLIENT/IBrokerClient/submitQueryByMaxPrice")]
         void submitQueryByMaxPrice(string client, int maxPrice);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public interface IBrokerClientServiceChannel : ClientForm.Broker.IBrokerClientService, System.ServiceModel.IClientChannel {
+    public interface IBrokerClientChannel : ClientForm.Broker.IBrokerClient, System.ServiceModel.IClientChannel {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public partial class BrokerClientServiceClient : System.ServiceModel.ClientBase<ClientForm.Broker.IBrokerClientService>, ClientForm.Broker.IBrokerClientService {
+    public partial class BrokerClientClient : System.ServiceModel.ClientBase<ClientForm.Broker.IBrokerClient>, ClientForm.Broker.IBrokerClient {
         
-        public BrokerClientServiceClient() {
+        public BrokerClientClient() {
         }
         
-        public BrokerClientServiceClient(string endpointConfigurationName) : 
+        public BrokerClientClient(string endpointConfigurationName) : 
                 base(endpointConfigurationName) {
         }
         
-        public BrokerClientServiceClient(string endpointConfigurationName, string remoteAddress) : 
+        public BrokerClientClient(string endpointConfigurationName, string remoteAddress) : 
                 base(endpointConfigurationName, remoteAddress) {
         }
         
-        public BrokerClientServiceClient(string endpointConfigurationName, System.ServiceModel.EndpointAddress remoteAddress) : 
+        public BrokerClientClient(string endpointConfigurationName, System.ServiceModel.EndpointAddress remoteAddress) : 
                 base(endpointConfigurationName, remoteAddress) {
         }
         
-        public BrokerClientServiceClient(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : 
+        public BrokerClientClient(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : 
                 base(binding, remoteAddress) {
         }
         

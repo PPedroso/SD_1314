@@ -13,7 +13,7 @@ using StandContract;
 namespace BrokerInterface
 {
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple)]
-    partial class BrokerServices : IBrokerClientService
+    partial class BrokerServices : IBrokerClient
     {
         Broker broker = new Broker();
 
@@ -49,7 +49,7 @@ namespace BrokerInterface
         }
     }
 
-    partial class BrokerServices : IBrokerStandService
+    partial class BrokerServices : IBrokerStand
     {
         public void registerStand(string standEndpoint)
         {
@@ -57,8 +57,8 @@ namespace BrokerInterface
             WSHttpBinding bind = new WSHttpBinding();
             bind.Security.Mode = SecurityMode.Message;
 
-            IChannelFactory<IStandBrokerContract> cfact = new ChannelFactory<IStandBrokerContract>(bind);
-            IStandBrokerContract proxy = cfact.CreateChannel(addr);
+            IChannelFactory<IStandBroker> cfact = new ChannelFactory<IStandBroker>(bind);
+            IStandBroker proxy = cfact.CreateChannel(addr);
             Console.WriteLine(String.Format("{0} registered", standEndpoint));
             broker.addStand(proxy);
         }

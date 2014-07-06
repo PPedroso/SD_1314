@@ -28,7 +28,7 @@ namespace StandAuto
             STAND_BROKER_SERVICE_ENDPOINT = svchost.Description.Endpoints[0].Address.ToString();
             
 
-            BrokerStandServiceClient proxy = new BrokerStandServiceClient();
+            BrokerStandClient proxy = new BrokerStandClient();
 
             proxy.registerStand(STAND_BROKER_SERVICE_ENDPOINT);
         }

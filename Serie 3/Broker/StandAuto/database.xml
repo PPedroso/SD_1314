@@ -12,14 +12,14 @@
     <price>1500</price>
     <brand>Mercedes</brand>
     <yearRegistration>2006</yearRegistration>
-    <isAvailable>0</isAvailable>
+    <isAvailable>1</isAvailable>
   </car>
   <car>
     <id>3</id>
     <price>1000</price>
     <brand>Mercedes</brand>
     <yearRegistration>2004</yearRegistration>
-    <isAvailable>0</isAvailable>
+    <isAvailable>1</isAvailable>
   </car>
   <car>
     <id>4</id>
@@ -40,20 +40,20 @@
     <price>5000</price>
     <brand>Mercedes</brand>
     <yearRegistration>2006</yearRegistration>
-    <isAvailable>0</isAvailable>
+    <isAvailable>1</isAvailable>
   </car>
   <car>
     <id>7</id>
     <price>4000</price>
     <brand>Opel</brand>
     <yearRegistration>2004</yearRegistration>
-    <isAvailable>0</isAvailable>
+    <isAvailable>1</isAvailable>
   </car>
   <car>
     <id>8</id>
     <price>2000</price>
     <brand>Mercedes</brand>
     <yearRegistration>2000</yearRegistration>
-    <isAvailable>0</isAvailable>
+    <isAvailable>1</isAvailable>
   </car>
 </cars>
