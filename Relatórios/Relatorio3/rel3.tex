@@ -14,6 +14,8 @@
 \usepackage{empheq}
 \usepackage{framed}
 \usepackage{float}
+\usepackage{pdfpages}
+\usepackage{graphicx}
 
 \definecolor{dkgreen}{rgb}{0,0.6,0}
 \definecolor{gray}{rgb}{0.5,0.5,0.5}
@@ -145,17 +147,20 @@ Este sistema é composto pelos seguintes intervenientes:
 
 \end{itemize}
 
+\newpage
 
 \section{Arquitetura}
-(Adicionar imagem da arquitetura)
 
-(Explicação do flow da informação. Assim como são passados os endpoints do cliente para o stand e do stand para o cliente)
+\begin{figure}[H]
+\centering
+\includegraphics[width=100mm]{Arquitectura.jpg}\\
+\end{figure}
 
------------------------------------------------
+----------------------------------------------------------------------------------------------
 
-As diversas aplicações foram desenvolvidas em \emph{c-\#}. Na componente gráfica do cliente foi usado \emph{Windows Forms}, enquanto para a componente \emph{web} das diversas aplicações foi usado \emph{WCF}.
+As diversas aplicações foram desenvolvidas em \emph{c\#}. Na componente gráfica do cliente foi usado \emph{Windows Forms}, enquanto para a componente \emph{web} das diversas aplicações foi usado \emph{WCF}.
 
-Para o desenvolvimento dos serviços, existem restrições em relação aos \emph{bindings} que podem ser usados (\emph{Binding wsHttpBinding} e \emph{basicHttpBinding}). Tendo em conta que não foi possivel usar \emph{bindings} com suporte para \emph{callbacks}, optou-se por passar os endereços durante as diversas comunicações, para executar posteriormente a entrega/aceitação de propostas.
+Para o desenvolvimento dos serviços, existem restrições em relação aos \emph{bindings} que podem ser usados (\emph{Binding wsHttpBinding} e \emph{basicHttpBinding}). Tendo em conta que não foi possível usar \emph{bindings} com suporte para \emph{callbacks}, optou-se por passar os endereços durante as diversas comunicações, para executar posteriormente a entrega/aceitação de propostas.
 
 \newpage
 
@@ -167,7 +172,7 @@ Para o desenvolvimento dos serviços, existem restrições em relação aos \emp
 \begin{itemize} 
 
 \item
-\emph{\underline{IBrokerClientService:}}
+\emph{\underline{IBrokerClient:}}
 Serviço que permite aos clientes submeterem as suas pesquisas ao \emph{Broker}.
 	\begin{itemize}
 		\item
@@ -175,24 +180,24 @@ Serviço que permite aos clientes submeterem as suas pesquisas ao \emph{Broker}.
 		Visto não haver alterações de objetos neste serviço e admitindo que haverá vários clientes a fazer várias pesquisas então não seria razoável criar um objeto por chamada. Um só objeto consegue lidar com os pedidos de forma eficaz.
 		\item
 		Modo de controlo de concorrência: \underline{Multiple}\\
-		Ao receber vários pedidos será razoável que o processamento desses pedidos seja \emph{multi-thread}. Visto não haver alterações nenhumas em váriaveis no \emph{Singleton} então não é necessário sincronismo adicional por parte do \emph{Broker}.
+		Ao receber vários pedidos será razoável que o processamento desses pedidos seja \emph{multi-thread}. Visto não haver alterações nenhumas em variáveis no \emph{Singleton} então não é necessário sincronismo adicional por parte do \emph{Broker}.
 		\item
 		Binding utilizado: \underline{basicHttpBinding}\\
-		Visto a informação enviada para o \emph{Broker} não ter dados importantes, é utilizado \emph{basicHttpBinding} para simplificar a mensagem enviada. Visto também que o cliente não obtém \emph{feedback} nesta comunicação, os métodos estão declarados como \emph{IsOneWay}. Esta opção faz com que o \emph{emph} seja imediatamente libertado após a receção da mensagem por parte do \emph{Broker} e liberta este \emph{binding } para ser utilizado pelos stands para submissão de propostas.
+		Visto a informação enviada para o \emph{Broker} não ter dados importantes, é utilizado \emph{basicHttpBinding} para simplificar a mensagem enviada. Visto também que o cliente não obtém \emph{feedback} nesta comunicação, os métodos estão declarados como \emph{IsOneWay}. Esta opção faz com que o \emph{binding} seja imediatamente libertado após a receção da mensagem por parte do \emph{Broker} e liberta este \emph{binding} para ser utilizado pelos stands para submissão de propostas.
 	\end{itemize}
 \item
-\emph{\underline{IBrokerStandService:}}
+\emph{\underline{IBrokerStand:}}
 Serviço que permite que um \emph{stand} se registe no \emph{Broker} para receber as pesquisas dos clientes.
 		\begin{itemize}
 		\item
-		Modo de instanciação: \underline{Singleton}
-		Devido a existenência de dois serviços, foi necessário usar \emph{partial classes}, logo, o modo de instanciação teria de ser igual a \emph{IBrokerClientService}.
+		Modo de instanciação: \underline{Singleton}\\
+		Devido a existência de dois serviços, foi necessário usar \emph{partial classes}, logo, o modo de instanciação teria de ser igual a \emph{IBrokerClientService}.
 		\item
-		Modo de controlo de concorrência: \underline{Multiple}
+		Modo de controlo de concorrência: \underline{Multiple}\\
 		Com a possibilidade de vários stands se registarem ao mesmo tempo, utilizamos um modo de concorrência \emph{Multiple}. Isto cria problemas em relação ao sincronismo do objeto que está a ser usado para guardar os \emph{proxies}, em que se optou por usar mecanismos de \emph{lock}, já que não foi encontrada nenhuma coleção concorrente que suportasse remoção adequada.
 		
 		\item
-		Binding utilizado: \underline{wsHttpBinding}
+		Binding utilizado: \underline{wsHttpBinding}\\
 		Binding utilizado como requisito não funcional.
 	\end{itemize}
 \end{itemize}
@@ -209,10 +214,10 @@ Serviço que permite aos stands submeteram as propostas aos clientes.
 	\begin{itemize}
 		\item
 		Modo de instanciação: \underline{PerCall}\\
-		Um cliente só receberá propostas depois de efetuar uma pesquisa. Isto faz com que usar um objecto Singleton não seja razoável no sentido que não há necessidade de manter um objeto de serviço alocado quando não se espera mais propostas. Por esta razão foi escolhido o método de instanciação \emph{PerCall} que cria um objeto de serviço que tem a duração da submissão da proposta.
+		Um cliente só receberá propostas depois de efetuar uma pesquisa. Isto faz com que usar um objeto \emph{Singleton} não seja razoável no sentido que não há necessidade de manter um objeto de serviço alocado quando não se espera mais propostas. Por esta razão foi escolhido o método de instanciação \emph{PerCall} que cria um objeto de serviço que tem a duração da submissão da proposta.
 		\item
 		Modo de controlo de concorrência: \underline{Multiple}\\
-		(como é que o updateTextBox no submitProposal está a funcionar threadsafe se isto está com multiple?)
+		Para resolver os problemas de concorrência causados pelo controlo \emph{multiple} utilizamos o método \emph{beginInvoke} para obrigar a que as alterações à \emph{listbox} sejam feitas sempre na \emph{UI thread}.
 		
 		\item
 		Binding utilizado: \underline{basicHttpBinding}\\
@@ -222,12 +227,12 @@ Serviço que permite aos stands submeteram as propostas aos clientes.
 
 
 \subsection{\emph{StandAuto}}
-Componente que mantem persistente dados de carros e submete as propostas aos clientes com base nas pesquisas feitas.
+Componente que mantém persistente dados de carros e submete as propostas aos clientes com base nas pesquisas feitas.
 \subsubsection{Serviços disponibilizados}
 \begin{itemize} 
 
 \item
-\emph{\underline{IStandBrokerContract:}}
+\emph{\underline{IStandBroker:}}
 Serviço que permite ao \emph{Broker} propagar a pesquisa aos \emph{stands}.
 	\begin{itemize}
 		\item
@@ -241,19 +246,35 @@ Serviço que permite ao \emph{Broker} propagar a pesquisa aos \emph{stands}.
 		Binding utilizado: \underline{wsHttpBinding}\\
 		Binding utilizado como requisito não funcional.
 	\end{itemize}
+	
+	\item
+\emph{\underline{IStandClient:}}
+Serviço que permite aos clientes fazerem as suas reservas de carros.
+	\begin{itemize}
+		\item
+		Modo de instanciação: \underline{Singleton}\\
+		Admitindo que este serviço irá estar frequentemente a receber reservas vindos dos clientes é razoável a utilização de um objeto de serviço \emph{Singleton}.
+		\item
+		Modo de controlo de concorrência: \underline{Multiple}\\
+		Várias reservas implicam um ambiente \emph{multi-thread} portanto é usado o controlo de concorrência \emph{multiple}. Visto haver mudança em variáveis (alterar o estado do carro para reservado) foi necessário implementar um mecanismo adicional de concorrência. Por isso utilizamos o mecanismo \emph{Interlocked.CompareExchange} para fazer a mudança de forma \emph{thread-safe}.
+		\item
+		Binding utilizado: \underline{wsHttpBinding}\\
+		Binding utilizado como requisito não funcional.
+	\end{itemize}
+	
 \end{itemize}
 
 
 \subsubsection{Persistência de dados}
 
-Um dos requesitos da aplicação, era que os carros que cada \emph{stand} disponibiliza, fossem persistentes através do uso de ficheiros \emph{.xml}. 
+Um dos requisitos da aplicação, era que os carros que cada \emph{stand} disponibiliza, fossem persistentes através do uso de ficheiros \emph{.xml}. 
 
 Como tal, definiu-se que cada carro teria a seguintes estrutura:
 
 \begin{figure}[H]
 	\begin{framed}
 		\texttt{<car> \\
-					\hspace*{5mm}<id> identificadar dentro do \emph{stand} em concreto</id> \\
+					\hspace*{5mm}<id> identificador dentro do \emph{stand} em concreto</id> \\
 					\hspace*{5mm}<price> preço </price>\\
 					\hspace*{5mm}<brand> marca </brand>\\
 					\hspace*{5mm}<yearRegistration> ano do registo de matricula</yearRegistration>\\
@@ -265,11 +286,8 @@ Como tal, definiu-se que cada carro teria a seguintes estrutura:
   \label{fig:httpHeaderReq}
 \end{figure}
 
-Não foi adicionado nenhum mecanismo de verificação da validade destes ficheiros (\emph{.xsd}), sendo apenas possivel passar de não reservado para reservado. Qualquer outra alteração terá de ser feita manualmente sobre estes ficheiros.
+Não foi adicionado nenhum mecanismo de verificação da validade destes ficheiros (\emph{.xsd}), sendo apenas possível passar de não reservado para reservado. Qualquer outra alteração terá de ser feita manualmente sobre estes ficheiros.
 Em relação a problemas gerados devido a concorrência, optou-se por assegurar apenas que não é possível múltiplas reservas no mesmo carro, informando o cliente desta situação.
-
-
-\section{Conclusões}
 
 
 \end{document}
