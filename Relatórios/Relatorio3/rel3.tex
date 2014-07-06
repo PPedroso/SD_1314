@@ -153,7 +153,9 @@ Este sistema é composto pelos seguintes intervenientes:
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=100mm]{Arquitectura.jpg}\\
+\includegraphics[width=100mm]{Arquitectura.jpg}
+\caption{Arquitetura}
+  \label{fig:httpHeaderReq}
 \end{figure}
 
 ----------------------------------------------------------------------------------------------
@@ -194,13 +196,15 @@ Serviço que permite que um \emph{stand} se registe no \emph{Broker} para recebe
 		Devido a existência de dois serviços, foi necessário usar \emph{partial classes}, logo, o modo de instanciação teria de ser igual a \emph{IBrokerClientService}.
 		\item
 		Modo de controlo de concorrência: \underline{Multiple}\\
-		Com a possibilidade de vários stands se registarem ao mesmo tempo, utilizamos um modo de concorrência \emph{Multiple}. Isto cria problemas em relação ao sincronismo do objeto que está a ser usado para guardar os \emph{proxies}, em que se optou por usar mecanismos de \emph{lock}, já que não foi encontrada nenhuma coleção concorrente que suportasse remoção adequada.
+		Com a possibilidade de vários stands se registarem ao mesmo tempo, utilizamos um modo de concorrência \emph{Multiple}. Isto cria problemas em relação ao sincronismo do objeto que está a ser usado para guardar o registo dos \emph{stands}, em que se optou por usar mecanismos de \emph{lock} que, visto o registo de \emph{stands} ser algo que ocorrerá ocasionalmente, não vai afetar a \emph{performance} por ser um mecanismo bloqueante.
 		
 		\item
 		Binding utilizado: \underline{wsHttpBinding}\\
 		Binding utilizado como requisito não funcional.
 	\end{itemize}
 \end{itemize}
+
+\newpage
 
 
 \subsection{\emph{Client}}
@@ -288,6 +292,33 @@ Como tal, definiu-se que cada carro teria a seguintes estrutura:
 
 Não foi adicionado nenhum mecanismo de verificação da validade destes ficheiros (\emph{.xsd}), sendo apenas possível passar de não reservado para reservado. Qualquer outra alteração terá de ser feita manualmente sobre estes ficheiros.
 Em relação a problemas gerados devido a concorrência, optou-se por assegurar apenas que não é possível múltiplas reservas no mesmo carro, informando o cliente desta situação.
+
+\newpage
+
+\section{Pesquisas}
+Foram implementadas três tipos de pesquisas que o cliente pode usar para procurar pelos carros.
+
+\begin{itemize}
+
+\item
+\underline{Por marca}\\
+Retorna todos os carros da marca escolhida.
+
+\item
+\underline{Por ano}\\
+Retorna todos os carros que tenham data de criação igual ou superior à data escolhida.
+
+\item
+\underline{Por preço}\\
+Retorna todos os carros que tenham um preço menos ou igual ao preço escolhido.
+\end{itemize}
+
+\section{Tratamento de erros}
+Para lidar com erros que poderão eventualmente acontecer utilizamos \emph{FaultContracts}.
+No momento da reserva de um carro, se o carro já estiver reservado então lançamos uma exceção nossa \emph{AlreadyReservedFault} para dizer ao cliente que o carro já foi reservado sem ser necessário a criação de mais um \emph{binding} de comunicação.
+
+\section{Ficheiros de configuração}
+Cada componente está suportado por um ficheiro de configuração (\emph{app.config}) onde são definidos os \emph{endpoints} dos serviços disponibilizados assim como os \emph{endpoints} dos serviços dos outros componentes assim como todas as configuração associadas aos mesmos (tipos de \emph{binding}, contractos, etc). Assim é fácil mudar os \emph{endpoints} sem ser necessário o compilador.
 
 
 \end{document}
